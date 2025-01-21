@@ -56,6 +56,6 @@ const unitSchema = mongoose.Schema({
         type: String,
         required: true
     },
-})
+},{timestamps:true})
 
 export const Unit = mongoose.model("Unit", unitSchema);

@@ -26,7 +26,7 @@ export const signUp = async(req,res,next) => {
         signature: process.env.CONFIRMATION_EMAIL_TOKEN, 
         expiresIn: '1h',
      })
-
+     
      const confirmationLink = `${req.protocol}://${req.headers.host}/auth/confirm/${token}`
     
      const isEmailSent = sendEmailService({

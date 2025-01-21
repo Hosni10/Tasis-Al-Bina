@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const blogSchema = mongoose.Schema({
     title: {
@@ -6,18 +6,32 @@ const blogSchema = mongoose.Schema({
         required: true
     },
     author: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: 'Admin'
+    },
+    Image: {
+        secure_url:{
+            type: String,
+            required: true,
+        },
+        public_id: {
+            type: String,
+            required: true,
+        },
     },
     content: {
         type: String,
         required: true
     },
+    customId:String,
     createdAt: {
         type: Date,
         default: Date.now
     }
-})
+},{timestamps:true})
 
 export const Blog = mongoose.model("Blog", blogSchema);
+
+
+// wxdhqehya

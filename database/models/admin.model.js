@@ -15,6 +15,6 @@ const adminSchema = mongoose.Schema({
         required: true,
         unique: true
     }
-})
+},{timestamps:true})
 
 export const Admin = mongoose.model('Admin', adminSchema)

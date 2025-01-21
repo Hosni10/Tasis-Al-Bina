@@ -24,6 +24,6 @@ const reservationSchema = mongoose.Schema({
         ref: "Unit",
         required: true,
     }
-})
+},{timestamps:true})
 
 export const Reservation = mongoose.model('Reservation', reservationSchema);
