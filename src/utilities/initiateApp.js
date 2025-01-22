@@ -11,6 +11,8 @@ dbConnection;
 
 app.use('/auth', routers.authRouter)
 app.use("/blog",routers.blogsRouter)
+app.use("/review",routers.reviewsRouter)
+app.use("/question",routers.questionRouter)
 
 
 app.use('*',(req,res,next) => res.status(404).json({message: '404 not found URL'}))
