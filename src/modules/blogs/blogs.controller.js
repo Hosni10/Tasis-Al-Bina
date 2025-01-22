@@ -84,7 +84,7 @@ export const updateBlog = async(req,res,next) => {
     const blog = await Blog.findById(id)
   
     if(!blog) {
-      return next(new Error("Blog Didn't Found",{cause:400}))
+      return next(new Error("Blog Didn't Found",{cause:404}))
     }
   
     if(title) blog.title = title
@@ -110,8 +110,6 @@ export const updateBlog = async(req,res,next) => {
   }
  
 }
-
-
 
 export const deleteBlog = async (req, res, next) => {
   try {
