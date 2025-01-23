@@ -41,7 +41,6 @@ export const createQuestion = async (req,res,next) => {
       }
 }
 
-
 export const UpdateQuestion = async (req,res,next) => {
     try{
 
@@ -82,7 +81,6 @@ export const UpdateQuestion = async (req,res,next) => {
        }
 }
 
-
 export const getAllQuestion = async (req,res,next) => {
     try{
 
@@ -97,7 +95,6 @@ export const getAllQuestion = async (req,res,next) => {
        }
 }
 
-
 export const getSingleQuestion = async (req,res,next) => {
     try{
         const id = req.params.id
@@ -110,8 +107,6 @@ export const getSingleQuestion = async (req,res,next) => {
          next(new Error(`fail to upload ${error.message}`, { cause: 500 }));
        }
 }
-
-
 
 export const deleteQuestion = async (req,res,next) => {
     try{
@@ -126,3 +121,4 @@ export const deleteQuestion = async (req,res,next) => {
          next(new Error(`fail to upload ${error.message}`, { cause: 500 }));
        }
 }
+

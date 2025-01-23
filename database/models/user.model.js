@@ -4,7 +4,15 @@ import { systemRoles } from "../../src/utilities/systemRole.js"
 
 const userSchema = new Schema({
 
-    username:{
+    firstName:{
+        type:String,
+        required: true,
+    },
+    middleName:{
+        type:String,
+        required: true,
+    },
+    lastName:{
         type:String,
         required: true,
     },
@@ -17,18 +25,12 @@ const userSchema = new Schema({
         type:String,
         required:true,
     },
-    isConfirmed:{
-        type:Boolean,
-        required:true,
-        default:false,
-    },
     role:{
         type:String,
-        default:'SuperAdmin',
+        required:true,
         enum:[systemRoles.ADMIN,systemRoles.SUPER_ADMIN]
     },
-    age:{Number},
-    phoneNumber:{
+     phoneNumber:{
         type:String,
     },
     profilePicture:{
