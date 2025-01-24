@@ -10,6 +10,9 @@ app.use(express.json())
 dbConnection;
 
 app.use('/auth', routers.authRouter)
+app.use("/blog",routers.blogsRouter)
+app.use("/review",routers.reviewsRouter)
+app.use("/question",routers.questionRouter)
 app.use('/units', routers.unitRouter)
 
 
