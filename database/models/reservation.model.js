@@ -27,3 +27,4 @@ const reservationSchema = mongoose.Schema({
 },{timestamps:true})
 
 export const Reservation = mongoose.model('Reservation', reservationSchema);
+
