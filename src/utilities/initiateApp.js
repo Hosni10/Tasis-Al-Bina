@@ -13,7 +13,7 @@ app.use('/auth', routers.authRouter)
 app.use("/blog",routers.blogsRouter)
 app.use("/review",routers.reviewsRouter)
 app.use("/question",routers.questionRouter)
-app.use('/units', routers.unitRouter)
+app.use('/unit', routers.unitRouter)
 
 
 app.use('*',(req,res,next) => res.status(404).json({message: '404 not found URL'}))
@@ -26,3 +26,6 @@ app.get('/', (req,res)=>res.send('Hellow World!'))
 app.listen(port, () => console.log(`Application on port ${port}`.random)) 
 
 }
+
+
+
