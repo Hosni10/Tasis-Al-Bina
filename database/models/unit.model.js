@@ -13,6 +13,8 @@ const unitSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    // ? يبعد كم دقيقة عن كذا
+    // ? حجز جوجل ميتنج
     price:{
         type: Number,
         required: true
@@ -65,12 +67,21 @@ const unitSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    // coordinates: {
+    //     latitude: {
+    //         type: Number,
+    //         required: true
+    //     },                   // ^ for GPS
+    //     longitude: {
+    //         type: Number,
+    //         required: true
+    //     }
+    // },
     customId:String,
     createdBy:{
         type:Schema.Types.ObjectId,
         ref:'Admin'
     }
-
 },{timestamps:true})
 
 export const Unit = mongoose.model("Unit", unitSchema);

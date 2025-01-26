@@ -21,7 +21,14 @@ const addUnit = async (req, res, next) => {
       maidRoom,
       driverRoom,
       location,
+      // ^ latitude,
+      // ^ longitude, // New fields
     } = req.body;
+
+
+    // ^ if (!latitude || !longitude) {
+    // ^   return next(new Error("Please provide both latitude and longitude for the unit's GPS coordinates.", { cause: 400 }));
+    // ^ }
 
     if (!req.files || req.files.length === 0) {
       return next(new Error("Please upload at least one image for the unit", { cause: 400 }));
@@ -59,6 +66,7 @@ const addUnit = async (req, res, next) => {
       driverRoom,
       location,
       customId,
+      // ^ coordinates: { latitude, longitude }, // Include coordinates
       createdBy:_id
 
     };
@@ -190,7 +198,6 @@ const deleteUnit = async (req, res, next) => {
     next(new Error(`Failed to delete unit: ${error.message}`, { cause: 500 }));
   }
 };
-
 
 const getAllUnits = async (req, res) => {
   const {
