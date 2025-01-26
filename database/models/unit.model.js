@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const unitSchema = mongoose.Schema({
     title:{
@@ -21,13 +21,22 @@ const unitSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    image:{
-        type: [String],
-    },
     bedrooms:{
         type: Number,
         required: true
     },
+    images: [
+        {
+          secure_url: {
+            type: String,
+            required: true,
+          },
+          public_id: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
     bathrooms:{
         type: Number,
         required: true
@@ -56,6 +65,12 @@ const unitSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    customId:String,
+    createdBy:{
+        type:Schema.Types.ObjectId,
+        ref:'Admin'
+    }
+
 },{timestamps:true})
 
 export const Unit = mongoose.model("Unit", unitSchema);

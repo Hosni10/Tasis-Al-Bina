@@ -1,15 +1,18 @@
-import mongoose from "mongoose";
 import { Unit } from "../../../database/models/unit.model.js";
+import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js";
+import { customAlphabet } from 'nanoid'
+const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
-const addUnit = async (req, res) => {
+const addUnit = async (req, res, next) => {
   try {
+    const {_id} = req.authUser
     const {
+
       title,
       type,
       description,
       area,
       price,
-      image,
       bedrooms,
       bathrooms,
       livingrooms,
@@ -19,13 +22,34 @@ const addUnit = async (req, res) => {
       driverRoom,
       location,
     } = req.body;
-    const newUnit = new Unit({
+
+    if (!req.files || req.files.length === 0) {
+      return next(new Error("Please upload at least one image for the unit", { cause: 400 }));
+    }
+
+    const customId = nanoid();
+    const uploadedImages = [];
+
+    for (const file of req.files) {
+      const uploadResult = await imagekit.upload({
+        file: file.buffer, 
+        fileName: file.originalname,
+        folder: `${process.env.PROJECT_FOLDER}/Units/${customId}`,
+      });
+
+      uploadedImages.push({
+        secure_url: uploadResult.url,
+        public_id: uploadResult.fileId,
+      });
+    }
+
+    const unitObject = {
       title,
       type,
       description,
       area,
       price,
-      image,
+      images: uploadedImages,
       bedrooms,
       bathrooms,
       livingrooms,
@@ -34,46 +58,44 @@ const addUnit = async (req, res) => {
       maidRoom,
       driverRoom,
       location,
-    });
-    await newUnit.save();
-    res.status(201).json({ message: "Unit Created Successfully", newUnit });
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+      customId,
+      createdBy:_id
+
+    };
+
+    const unit = await Unit.create(unitObject);
+
+    if (!unit) {
+      for (const image of uploadedImages) {
+        await destroyImage(image.public_id);
+      }
+      return next(new Error("Failed to add the unit. Please try again later.", { cause: 400 }));
+    }
+
+    res.status(201).json({ message: "Unit created successfully", unit });
+  } catch (error) {
+    next(new Error(`Failed to add the unit: ${error.message}`, { cause: 500 }));
   }
 };
 
 const getUnit = async (req, res) => {
   const unit = await Unit.findById(req.params.id);
-  if (!unit) return res.status(404).json({ message: "Unit not found" });
+
+  if (!unit) return next(new Error("unit not found",{cause:404}))
+  
   res.status(200).json({ message: "Success", unit });
 };
 
-const updateUnit = async (req, res) => {
-  const {
-    title,
-    type,
-    description,
-    area,
-    price,
-    image,
-    bedrooms,
-    bathrooms,
-    livingrooms,
-    waterTank,
-    floor,
-    maidRoom,
-    driverRoom,
-    location,
-  } = req.body;
-  const updatedUnit = await Unit.findByIdAndUpdate(
-    req.params.id,
-    {
+const updateUnit = async (req, res, next) => {
+  try {
+    const {_id} = req.authUser
+    const { unitId } = req.params
+    const {
       title,
       type,
       description,
       area,
       price,
-      image,
       bedrooms,
       bathrooms,
       livingrooms,
@@ -82,18 +104,93 @@ const updateUnit = async (req, res) => {
       maidRoom,
       driverRoom,
       location,
-    },
-    { new: true }
-  );
-  if (!updatedUnit) return res.status(404).json({ message: "Unit not found" });
-  res.status(200).json({ message: "Unit updated successfully", updatedUnit });
+    } = req.body;
+
+    const unit = await Unit.findOne({id:unitId,createdBy:_id});
+    if (!unit) return res.status(404).json({ message: "Unit not found , you are not the owner of this unit" });
+
+    let updatedImages = unit.images || []; 
+
+    if (req.files && req.files.length > 0) {
+
+      for (const image of unit.images) {
+        try {
+          await imagekit.deleteFile(image.public_id); 
+        } catch (err) {
+          console.error(`Failed to delete image: ${image.public_id}`, err.message);
+        }
+      }
+
+      const newImages = [];
+      for (const file of req.files) {
+        const uploadResult = await imagekit.upload({
+          file: file.buffer, // Image buffer
+          fileName: file.originalname, // Original file name
+          folder: `${process.env.PROJECT_FOLDER}/Units/${unit.customId}`, // Folder path in ImageKit
+        });
+        newImages.push({
+          secure_url: uploadResult.url,
+          public_id: uploadResult.fileId,
+        });
+      }
+
+      updatedImages = newImages;
+    }
+
+    const updatedUnit = await Unit.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        type,
+        description,
+        area,
+        price,
+        images: updatedImages, // Replace with the updated image array
+        bedrooms,
+        bathrooms,
+        livingrooms,
+        waterTank,
+        floor,
+        maidRoom,
+        driverRoom,
+        location,
+      },
+      { new: true } 
+    );
+
+    res.status(200).json({ message: "Unit updated successfully", updatedUnit });
+  } catch (error) {
+    next(new Error(`Failed to update the unit: ${error.message}`, { cause: 500 }));
+  }
 };
 
-const deleteUnit = async (req, res) => {
-  const deletedUnit = await Unit.findByIdAndDelete(req.params.id);
-  if (!deletedUnit) return res.status(404).json({ message: "Unit not found" });
-  res.status(200).json({ message: "Unit deleted successfully", deletedUnit });
+const deleteUnit = async (req, res, next) => {
+  try {
+    const {_id} = req.authUser
+    const { unitId } = req.params
+    const unit = await Unit.findOne({id:unitId,createdBy:_id});
+    if (!unit) {
+      return res.status(404).json({  message: "Unit not found , you are not the owner of this unit" });
+    }
+
+    if (unit.images && unit.images.length > 0) {
+      for (const image of unit.images) {
+        try {
+          await imagekit.deleteFile(image.public_id); 
+        } catch (error) {
+          console.error(`Failed to delete image: ${image.public_id}`, error.message);
+        }
+      }
+    }
+
+    const deletedUnit = await Unit.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ message: "Unit deleted successfully", deletedUnit });
+  } catch (error) {
+    next(new Error(`Failed to delete unit: ${error.message}`, { cause: 500 }));
+  }
 };
+
 
 const getAllUnits = async (req, res) => {
   const {
