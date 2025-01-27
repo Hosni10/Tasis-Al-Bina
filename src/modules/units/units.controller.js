@@ -4,10 +4,10 @@ import { customAlphabet } from 'nanoid'
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 const addUnit = async (req, res, next) => {
+  
   try {
     const {_id} = req.authUser
     const {
-
       title,
       type,
       description,
@@ -21,7 +21,21 @@ const addUnit = async (req, res, next) => {
       maidRoom,
       driverRoom,
       location,
+      latitude,
+      longitude,
+      nearbyPlaces,
     } = req.body;
+
+    // console.log(req.body);
+    // console.log("nearbyPlaces",nearbyPlaces);
+    // console.log("nearbyPlaces",nearbyPlaces.place[0]);
+    // console.log("nearbyPlaces",nearbyPlaces.timeInMinutes[0]);
+    // console.log(place);
+    // console.log(timeInMinutes);
+
+    if (!latitude || !longitude) {
+      return next(new Error("Please provide both latitude and longitude for the unit's GPS coordinates.", { cause: 400 }));
+    }
 
     if (!req.files || req.files.length === 0) {
       return next(new Error("Please upload at least one image for the unit", { cause: 400 }));
@@ -59,6 +73,8 @@ const addUnit = async (req, res, next) => {
       driverRoom,
       location,
       customId,
+      nearbyPlaces,
+      coordinates: { latitude, longitude }, // Include coordinates
       createdBy:_id
 
     };
@@ -104,6 +120,8 @@ const updateUnit = async (req, res, next) => {
       maidRoom,
       driverRoom,
       location,
+      latitude,
+      longitude,
     } = req.body;
 
     const unit = await Unit.findOne({id:unitId,createdBy:_id});
@@ -154,6 +172,7 @@ const updateUnit = async (req, res, next) => {
         maidRoom,
         driverRoom,
         location,
+        coordinates: { latitude, longitude }, 
       },
       { new: true } 
     );
@@ -190,7 +209,6 @@ const deleteUnit = async (req, res, next) => {
     next(new Error(`Failed to delete unit: ${error.message}`, { cause: 500 }));
   }
 };
-
 
 const getAllUnits = async (req, res) => {
   const {
@@ -235,3 +253,4 @@ const getAllUnits = async (req, res) => {
 };
 
 export { addUnit, getUnit, updateUnit, deleteUnit, getAllUnits };
+

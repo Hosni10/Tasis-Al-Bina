@@ -1,4 +1,4 @@
-import mongoose, { now } from "mongoose";
+import mongoose from "mongoose";
 
 
 const reservationSchema = mongoose.Schema({
@@ -27,3 +27,4 @@ const reservationSchema = mongoose.Schema({
 },{timestamps:true})
 
 export const Reservation = mongoose.model('Reservation', reservationSchema);
+

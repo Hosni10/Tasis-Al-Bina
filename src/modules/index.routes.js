@@ -4,7 +4,7 @@ import reviewsRouter from "./reviews/reviews.routes.js"
 import questionRouter from "./questions/questions.routes.js"
 
 import unitRouter from "./units/units.routes.js"
-
+import messageRouter from "./messages/message.routes.js"
 
 export {
     authRouter,
@@ -12,4 +12,5 @@ export {
     reviewsRouter,
     questionRouter,
     unitRouter,
+    messageRouter
 }
