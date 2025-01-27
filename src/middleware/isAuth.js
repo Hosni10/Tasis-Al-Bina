@@ -1,6 +1,5 @@
 import { userModel } from '../../database/models/user.model.js';
 import { generateToken, verifyToken } from '../utilities/tokenFunction.js';
-
 export const isAuth = (roles) => {
   return async (req, res, next) => {
     try {
@@ -65,3 +64,8 @@ export const isAuth = (roles) => {
     }
   };
 };
+
+
+
+
+
