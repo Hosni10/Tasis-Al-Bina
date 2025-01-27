@@ -53,7 +53,7 @@ export const sendEmailBinCode = async (req, res, next) => {
     expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
   });
 
-//   console.log(verificationCodes);
+  console.log(verificationCodes);
 
 
    try {
@@ -82,6 +82,8 @@ export const addUser = async (req, res, next) => {
       if (EmailExisted) return next(new Error('This email is already exist'));
   
    const storedCode = verificationCodes.get(email);
+   console.log(storedCode);
+   
    if (!storedCode) {
      console.error('No verification code found for email:', email);
      return res.status(400).json({ error: 'No verification code found. Please request a new one.' });
@@ -113,10 +115,6 @@ export const addUser = async (req, res, next) => {
       res.status(500).json({ error: 'Failed to add user' });
     }
 };
-  
-
-
-
 
 import pkg from 'bcrypt'
 export const login = async(req,res,next) => {
