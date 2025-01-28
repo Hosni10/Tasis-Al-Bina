@@ -15,9 +15,6 @@ const credentials = {
 };  // TODO -> save the data in env file
 
 const { client_id, client_secret, redirect_uris } = credentials.web;
-console.log(client_id);
-console.log(client_secret);
-console.log(redirect_uris);
 const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 const TOKEN_PATH = path.join(process.cwd(), "token.json");
 
