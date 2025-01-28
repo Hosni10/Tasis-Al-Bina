@@ -13,8 +13,6 @@ const unitSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    // TODO يبعد كم دقيقة عن كذا ✔️
-    // TODO حجز جوجل ميتنج
     price:{
         type: Number,
         required: true

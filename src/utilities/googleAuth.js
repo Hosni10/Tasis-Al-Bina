@@ -12,7 +12,7 @@ const credentials = {
     client_secret: "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",
     redirect_uris: ["http://localhost:8080/oauth/callback"],
   },
-};
+};  // TODO -> save the data in env file
 
 const { client_id, client_secret, redirect_uris } = credentials.web;
 const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
