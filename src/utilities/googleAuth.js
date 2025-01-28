@@ -4,21 +4,28 @@ import path from "path";
 
 const credentials = {
   web: {
-    client_id: "92007311702-2kmkhoiecutfl4epru0e751ctbcsppnb.apps.googleusercontent.com",
-    project_id: "tasis-449018",
-    auth_uri: "https://accounts.google.com/o/oauth2/auth",
-    token_uri: "https://oauth2.googleapis.com/token",
-    auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-    client_secret: "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",
-    redirect_uris: ["http://localhost:8080/oauth/callback"],
+    client_id: process.env.CLIENT_ID,
+    project_id: process.env.PROJECT_ID,
+    auth_uri: process.env.AUTH_URL,
+    token_uri: process.env.TOKEN_URL,
+    auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_X509_CERT_URL,
+    client_secret: process.env.CLIENT_SECRET,
+    redirect_uris: [process.env.REDIRECT_URLS],
   },
 };  // TODO -> save the data in env file
 
 const { client_id, client_secret, redirect_uris } = credentials.web;
+console.log(client_id);
+console.log(client_secret);
+console.log(redirect_uris);
 const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 const TOKEN_PATH = path.join(process.cwd(), "token.json");
 
 const authenticateGoogle = async () => {
+  console.log(client_id);
+  console.log(client_secret);
+  console.log(redirect_uris);
+  
   if (fs.existsSync(TOKEN_PATH)) {
     const token = JSON.parse(fs.readFileSync(TOKEN_PATH, "utf-8"));
     oAuth2Client.setCredentials(token);
