@@ -13,8 +13,6 @@ const unitSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    // ? يبعد كم دقيقة عن كذا
-    // ? حجز جوجل ميتنج
     price:{
         type: Number,
         required: true

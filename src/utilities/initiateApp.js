@@ -15,6 +15,7 @@ app.use("/review",routers.reviewsRouter)
 app.use("/question",routers.questionRouter)
 app.use('/unit', routers.unitRouter)
 app.use('/message', routers.messageRouter)
+app.use('/', routers.meetingRouter)
 
 
 app.use('*',(req,res,next) => res.status(404).json({message: '404 not found URL'}))

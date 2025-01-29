@@ -5,6 +5,7 @@ import questionRouter from "./questions/questions.routes.js"
 
 import unitRouter from "./units/units.routes.js"
 import messageRouter from "./messages/message.routes.js"
+import meetingRouter from "./meeting/meetiong.routes.js"
 
 export {
     authRouter,
@@ -12,5 +13,6 @@ export {
     reviewsRouter,
     questionRouter,
     unitRouter,
-    messageRouter
+    messageRouter,
+    meetingRouter
 }
