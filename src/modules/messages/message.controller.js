@@ -1,4 +1,5 @@
 import { Message } from "../../../database/models/message.model.js"
+import { pagination } from "../../utilities/pagination.js"
 
 
 
@@ -25,11 +26,18 @@ export const createMessage = async(req,res,next) => {
 }
 
 export const getAllMessages = async(req,res,next) => {
-    const messages = await Message.find()
+    try {
+    const {page, size} = req.query
+    const {limit, skip} = pagination({page, size}) 
+
+    const messages = await Message.find().limit(limit).skip(skip)
 
     if(!messages) return next(new Error("No messages found",{cause:404}))
 
     res.status(201).json({message:"Messages", messages})
+    } catch (error) {
+        res.status(500).json({message:"server Error"})
+    }
 }
 
 export const getSingleMessage = async(req,res,next) => {

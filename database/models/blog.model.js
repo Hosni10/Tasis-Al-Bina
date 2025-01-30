@@ -32,6 +32,3 @@ const blogSchema = mongoose.Schema({
 },{timestamps:true})
 
 export const Blog = mongoose.model("Blog", blogSchema);
-
-
-// wxdhqehya

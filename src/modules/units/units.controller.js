@@ -1,6 +1,8 @@
 import { Unit } from "../../../database/models/unit.model.js";
 import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js";
 import { customAlphabet } from 'nanoid'
+import { pagination } from "../../utilities/pagination.js";
+import { apiFeatures } from "../../utilities/apisFeatures.js";
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 const addUnit = async (req, res, next) => {
@@ -16,6 +18,7 @@ const addUnit = async (req, res, next) => {
       bedrooms,
       bathrooms,
       livingrooms,
+      status,
       waterTank,
       floor,
       maidRoom,
@@ -69,6 +72,7 @@ const addUnit = async (req, res, next) => {
       livingrooms,
       waterTank,
       floor,
+      status,
       maidRoom,
       driverRoom,
       location,
@@ -95,6 +99,7 @@ const addUnit = async (req, res, next) => {
 };
 
 const getUnit = async (req, res) => {
+  
   const unit = await Unit.findById(req.params.id);
 
   if (!unit) return next(new Error("unit not found",{cause:404}))
@@ -113,6 +118,7 @@ const updateUnit = async (req, res, next) => {
       area,
       price,
       bedrooms,
+      status,
       bathrooms,
       livingrooms,
       waterTank,
@@ -169,6 +175,7 @@ const updateUnit = async (req, res, next) => {
         livingrooms,
         waterTank,
         floor,
+        status,
         maidRoom,
         driverRoom,
         location,
@@ -210,47 +217,69 @@ const deleteUnit = async (req, res, next) => {
   }
 };
 
+// const getAllUnits = async (req, res) => {
+//   const {
+//     limit = 10,
+//     page = 1,
+//     sortBy = "price",
+//     sortOrder = "desc",
+//     search = "",
+//   } = req.query;
+//   const query = {};
+//   if (search) {
+//     query.$or = [
+//       { title: { $regex: search, $options: "i" } },
+//       { description: { $regex: search, $options: "i" } },
+//       { location: { $regex: search, $options: "i" } },
+//     ];
+//   }
+//   Object.keys(filters).forEach((key) => {
+//     if (filters[key]) {
+//       query[key] = filters[key];
+//     }
+//   });
+
+//   const skip = (page - 1) * limit;
+
+//   const units = await Unit.find(query)
+
+//     .sort({ [sortOrder]: sortBy === "desc" ? -1 : 1 })
+//     .skip(skip)
+//     .limit(limit);
+
+//     const totalDocs = await Unit.countDocuments(query);
+
+//   res.status(200).json({ message: "Success", units ,
+//     pagination: {
+//       page,
+//       limit,
+//       totalDocs,
+//       totalPages: Math.ceil(totalDocs / limit),
+//     },
+//    });
+// };
+
 const getAllUnits = async (req, res) => {
-  const {
-    limit = 10,
-    page = 1,
-    sortBy = "price",
-    sortOrder = "desc",
-    search = "",
-  } = req.query;
-  const query = {};
-  if (search) {
-    query.$or = [
-      { title: { $regex: search, $options: "i" } },
-      { description: { $regex: search, $options: "i" } },
-      { location: { $regex: search, $options: "i" } },
-    ];
-  }
-  Object.keys(filters).forEach((key) => {
-    if (filters[key]) {
-      query[key] = filters[key];
-    }
-  });
 
-  const skip = (page - 1) * limit;
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
 
-  const units = await Unit.find(query)
+  const units = await Unit.find().limit(limit).skip(skip)
 
-    .sort({ [sortOrder]: sortBy === "desc" ? -1 : 1 })
-    .skip(skip)
-    .limit(limit);
+  res.status(200).json({ message: "Success", units})
 
-    const totalDocs = await Unit.countDocuments(query);
 
-  res.status(200).json({ message: "Success", units ,
-    pagination: {
-      page,
-      limit,
-      totalDocs,
-      totalPages: Math.ceil(totalDocs / limit),
-    },
-   });
-};
+}
 
-export { addUnit, getUnit, updateUnit, deleteUnit, getAllUnits };
+const getAllUnitsSorted = async (req, res) => {
+
+const apiFeatureInstance = new apiFeatures(Unit.find({}),req.query).sort()
+const units = await apiFeatureInstance.mongooQuery
+
+  res.status(200).json({ message: "Success", units})
+
+}
+
+
+export { addUnit, getUnit, updateUnit, deleteUnit, getAllUnits,getAllUnitsSorted };
 

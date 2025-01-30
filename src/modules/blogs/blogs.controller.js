@@ -1,6 +1,7 @@
 import { Blog } from "../../../database/models/blog.model.js"
 import { customAlphabet } from 'nanoid'
 import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js"
+import { pagination } from "../../utilities/pagination.js"
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 
@@ -57,10 +58,13 @@ export const createBlog = async(req,res,next) => {
 
 export const getAllBlogs = async(req,res,next) => {
 
-  const blogs = await Blog.find()
-
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
+  
+  const blogs = await Blog.find().limit(limit).skip(skip)
+  
   if(!blogs) return next(new Error("No Blogs Founded",{cause:404}))
-
+  
     const num = blogs.length
     res.status(201).json({message:`Blogs Number : ${num}`,blogs})
 }

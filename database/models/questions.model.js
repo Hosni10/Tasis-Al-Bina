@@ -13,10 +13,7 @@ const questionsSchema = new Schema({
         type:String,
         required:true,
     },
-    Keywords:{                                         // ! الكلمات المفتاحية
-        type:String,
-        required:true
-    },
+    Keywords: [{ type: String, required: true }],      // ! كلمات المفتاحية
     createdBy:{
         type:Schema.Types.ObjectId,
         ref:"Admin",
