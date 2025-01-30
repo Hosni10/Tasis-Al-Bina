@@ -2,43 +2,43 @@ import { userModel } from "../../../database/models/user.model.js"
 import { generateToken, verifyToken } from "../../utilities/tokenFunction.js"
 import crypto from 'crypto';
 import {sendVerificationEmail} from "../../services/sendEmailService.js"
-// export const signUp = async(req,res,next) => { 
-//     const {
-//         firstName,
-//         middleName,
-//         lastName,
-//         email,
-//         password,
-//         phoneNumber,
-//         role
-//     } = req.body
+export const signUp = async(req,res,next) => { 
+    const {
+        firstName,
+        middleName,
+        lastName,
+        email,
+        password,
+        phoneNumber,
+        role
+    } = req.body
 
-//     const isEmailExisted = await userModel.findOne({email})
+    const isEmailExisted = await userModel.findOne({email})
 
-//     if(isEmailExisted){
-//         return next(new Error('Email Is Already Exsist', { cause: 400 }))
-//     }
+    if(isEmailExisted){
+        return next(new Error('Email Is Already Exsist', { cause: 400 }))
+    }
 
-//     const token = generateToken({
-//         payload:{
-//             email,
-//         },
-//         signature: process.env.CONFIRMATION_EMAIL_TOKEN, 
-//         expiresIn: '1h',
-//      })
+    const token = generateToken({
+        payload:{
+            email,
+        },
+        signature: process.env.CONFIRMATION_EMAIL_TOKEN, 
+        expiresIn: '1h',
+     })
      
-//     const user = new userModel({
-//         firstName,
-//         middleName,
-//         lastName,
-//         email,
-//         password,
-//         phoneNumber,
-//         role
-//     })
-//     const saveUser = await user.save()
-//     res.status(201).json({message:'User Added successfully', saveUser})
-// }  // ! for admin crate one account and will delete that api 
+    const user = new userModel({
+        firstName,
+        middleName,
+        lastName,
+        email,
+        password,
+        phoneNumber,
+        role
+    })
+    const saveUser = await user.save()
+    res.status(201).json({message:'User Added successfully', saveUser})
+}  // ! for admin crate one account and will delete that api 
 
 
 const verificationCodes = new Map(); // Key: email, Value: { code, expiresAt }

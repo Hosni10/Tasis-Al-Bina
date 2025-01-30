@@ -7,7 +7,10 @@ const unitSchema = mongoose.Schema({
     },
     type:{
         type: String,
-        required: true
+        required: true,
+        default:"Apartment",
+        enum:["Villa", "Apartment" ,"Duplex", "Penthouse", "Townhouse",
+        "Studio Apartment", "Chalet","Warehouse","Office","Retail Shop"]
     },
     area:{
         type: Number,
@@ -56,6 +59,11 @@ const unitSchema = mongoose.Schema({
     maidRoom:{
         type: Boolean,
         required: true
+    },
+    status:{
+        type:String,
+        default:"Available",
+        enum:["Available","Reserved","Rented/Leased","Sold","Unavailable"]
     },
     driverRoom:{
         type: Boolean,

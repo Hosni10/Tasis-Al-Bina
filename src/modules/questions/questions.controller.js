@@ -1,4 +1,5 @@
 import { questionsModel } from "../../../database/models/questions.model.js"
+import { pagination } from "../../utilities/pagination.js"
 
 
 export const createQuestion = async (req,res,next) => {
@@ -84,8 +85,10 @@ export const UpdateQuestion = async (req,res,next) => {
 export const getAllQuestion = async (req,res,next) => {
     try{
 
+      const {page, size} = req.query
+      const {limit, skip} = pagination({page, size}) 
 
-         const questionData = await questionsModel.find()
+         const questionData = await questionsModel.find().limit(limit).skip(skip)
          if(!questionData) return next(new Error("didn't found the question .",{cause:404}))
          
             const num = questionData.length

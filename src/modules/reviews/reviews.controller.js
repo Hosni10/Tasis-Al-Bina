@@ -1,6 +1,7 @@
 import { reviewsModel } from "../../../database/models/reviews.model.js";
 import { customAlphabet } from 'nanoid'
 import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js";
+import { pagination } from "../../utilities/pagination.js";
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 
@@ -59,7 +60,11 @@ export const createReview = async(req,res,next) => {
 
 export const getAllReviews = async(req,res,next) => {
 
-  const reviews = await reviewsModel.find()
+
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
+
+  const reviews = await reviewsModel.find().limit(limit).skip(skip)
 
   if(!reviews) return next(new Error("No reviews Founded",{cause:404}))
 
