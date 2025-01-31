@@ -1,10 +1,12 @@
 import { dbConnection } from "../../database/dbConnection.js";
 import { globalResponse } from "./errorHandeling.js";
-
+// import cors from "cors"
 import * as routers from '../modules/index.routes.js'
 
 export const initiateApp = (app, express) => {
     const port = process.env.PORT 
+
+// app.use(cors)
 
 app.use(express.json())
 dbConnection;

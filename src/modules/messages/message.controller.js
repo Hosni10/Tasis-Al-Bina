@@ -6,15 +6,15 @@ import { pagination } from "../../utilities/pagination.js"
 export const createMessage = async(req,res,next) => {
     const {
         senderName,
+        phone,
         senderEmail,
-        subject,
         messageContent
     } = req.body
 
     const messageObject = {
         senderName,
         senderEmail,
-        subject,
+        phone,
         messageContent
     }
 

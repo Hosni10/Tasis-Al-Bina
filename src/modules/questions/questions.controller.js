@@ -88,7 +88,7 @@ export const getAllQuestion = async (req,res,next) => {
       const {page, size} = req.query
       const {limit, skip} = pagination({page, size}) 
 
-         const questionData = await questionsModel.find().limit(limit).skip(skip)
+         const questionData = await questionsModel.find()
          if(!questionData) return next(new Error("didn't found the question .",{cause:404}))
          
             const num = questionData.length

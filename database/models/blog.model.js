@@ -10,6 +10,11 @@ const blogSchema = mongoose.Schema({
         required: true,
         ref: 'Admin'
     },
+    description:{                                       // ! meta tag description
+        type:String,
+        required:true,
+    },
+    Keywords: [{ type: String, required: true }], 
     Image: {
         secure_url:{
             type: String,
@@ -20,9 +25,9 @@ const blogSchema = mongoose.Schema({
             required: true,
         },
     },
-    content: {
-        type: String,
-        required: true
+    views:{
+        type:Number,
+        required:true
     },
     customId:String,
     createdAt: {

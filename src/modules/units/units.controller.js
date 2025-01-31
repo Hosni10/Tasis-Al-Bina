@@ -280,6 +280,13 @@ const units = await apiFeatureInstance.mongooQuery
 
 }
 
+// const getUnitWithNameAndImage = async(req,res,next){
+
+//   const id = req.params.id 
+
+
+
+// } 
 
 export { addUnit, getUnit, updateUnit, deleteUnit, getAllUnits,getAllUnitsSorted };
 

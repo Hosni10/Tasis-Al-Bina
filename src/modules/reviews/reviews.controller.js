@@ -64,7 +64,7 @@ export const getAllReviews = async(req,res,next) => {
   const {page, size} = req.query
   const {limit, skip} = pagination({page, size}) 
 
-  const reviews = await reviewsModel.find().limit(limit).skip(skip)
+  const reviews = await reviewsModel.find()
 
   if(!reviews) return next(new Error("No reviews Founded",{cause:404}))
 

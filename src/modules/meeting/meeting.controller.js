@@ -70,11 +70,14 @@ export const callBack =  async (req, res) => {
   
       // Log the tokens to confirm they're received
       console.log('Tokens:', tokens);
+
   
       // Optionally, you can store these tokens (e.g., in a session, database, or in-memory storage)
-      res.send('OAuth flow completed successfully! Tokens are now available.');
+      res.send(`OAuth flow completed successfully! Tokens are now available: ${JSON.stringify(tokens)}`);
     } catch (error) {
       console.error('Error during OAuth callback:', error);
       res.status(500).send('Error processing OAuth callback.');
     }
-  }
+}
+
+
