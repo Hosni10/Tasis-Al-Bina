@@ -16,6 +16,7 @@ app.use("/review",routers.reviewsRouter)
 app.use("/question",routers.questionRouter)
 app.use('/unit', routers.unitRouter)
 app.use('/message', routers.messageRouter)
+app.use('/reservation', routers.reservationRouter)
 app.use('/', routers.meetingRouter)
 
 
