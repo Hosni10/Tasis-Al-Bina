@@ -1,6 +1,6 @@
 import express from "express";
-import { Reservation } from "../../../database/models/reservation.model";
-import { Unit } from "../../../database/models/unit.model";
+import { Unit } from "../../../database/models/unit.model.js";
+import { Reservation } from "../../../database/models/reservation.model.js";
 
 const addReservation = async (req, res) => {
   const { customerName, customerEmail, customerPhone, date, unitId } = req.bod;
@@ -14,7 +14,7 @@ const addReservation = async (req, res) => {
     unit,
   });
   const savedReservation = await newReservation.save();
-  res.status(201).json(savedReservation);
+  res.status(201).json({message:"Reservation Added Successfully",savedReservation});
 };
 
 const updateReservation = async (req, res) => {
@@ -27,7 +27,7 @@ const updateReservation = async (req, res) => {
   );
   if (!updatedReservation)
     return res.status(404).json({ msg: "Reservation not found" });
-  res.json(updatedReservation);
+  res.json({ message: "Reservation updated successfully", updatedReservation });
 };
 
 const deleteReservation = async (req, res) => {
@@ -55,6 +55,7 @@ const getReservations = async (req, res) => {
     .skip(skip)
     .limit(limit);
   res.json({
+    message: "Success",
     totalPages: Math.ceil(total / limit),
     reservations,
   });
