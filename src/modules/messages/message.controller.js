@@ -7,14 +7,14 @@ export const createMessage = async(req,res,next) => {
     const {
         senderName,
         senderEmail,
-        subject,
+        phone,
         messageContent
     } = req.body
 
     const messageObject = {
         senderName,
         senderEmail,
-        subject,
+        phone,
         messageContent
     }
 

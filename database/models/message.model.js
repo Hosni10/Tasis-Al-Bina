@@ -9,8 +9,8 @@ const messageSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    subject:{
-        type: String,
+    phone:{
+        type: Number,
         required: true
     },
     messageContent:{
