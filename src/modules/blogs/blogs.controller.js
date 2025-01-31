@@ -8,7 +8,7 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 export const createBlog = async(req,res,next) => {
   try {
   
-  const { title, author, content  } = req.body
+  const { title, author,description, Keywords ,views } = req.body
 
     if (!req.file) {
         return next(new Error('Please upload Blog image', { cause: 400 }))
@@ -34,7 +34,9 @@ export const createBlog = async(req,res,next) => {
         const blogObject = {
           title,
           author,
-          content,
+          description,
+          Keywords,
+          views,
           customId,
           Image: {
             secure_url: uploadResult.url,       // image url that frontend can access the image 
