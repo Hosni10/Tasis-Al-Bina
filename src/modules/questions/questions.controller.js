@@ -82,8 +82,6 @@ export const UpdateQuestion = async (req,res,next) => {
        }
 }
 
-
-
 export const getAllQuestion = async (req,res,next) => {
     try{
 

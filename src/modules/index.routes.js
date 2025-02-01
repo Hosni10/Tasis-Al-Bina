@@ -7,6 +7,7 @@ import reservationRouter from "./reservations/reservations.router.js"
 import unitRouter from "./units/units.routes.js"
 import messageRouter from "./messages/message.routes.js"
 import meetingRouter from "./meeting/meetiong.routes.js"
+import categoryRouter from "./category/category.routes.js"
 
 export {
     authRouter,
@@ -14,6 +15,7 @@ export {
     reviewsRouter,
     questionRouter,
     unitRouter,
+    categoryRouter,
     messageRouter,
     meetingRouter,
     reservationRouter
