@@ -84,7 +84,7 @@ export const getSingleBlogs = async(req,res,next) => {
 export const updateBlog = async(req,res,next) => {
 
   try {
-    const {title, content} =  req.body
+    const { title, author,description, Keywords ,views } = req.body
     const id = req.params.id
   
     const blog = await Blog.findById(id)
@@ -94,8 +94,11 @@ export const updateBlog = async(req,res,next) => {
     }
   
     if(title) blog.title = title
-    if(content) blog.content = content
-  
+    if(description) blog.description = description
+    if(Keywords) blog.Keywords = Keywords
+    if(Keywords) blog.Keywords = Keywords
+    if(views) blog.views = views
+
     if(req.file){
       await destroyImage(blog.Image.public_id);  
   

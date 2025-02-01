@@ -3,19 +3,25 @@ import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js"
 import { customAlphabet } from 'nanoid'
 import { pagination } from "../../utilities/pagination.js";
 import { apiFeatures } from "../../utilities/apisFeatures.js";
+import { categoryModel } from "../../../database/models/category.model.js";
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 const addUnit = async (req, res, next) => {
   
   try {
-    const {_id} = req.authUser
+    // const {_id} = req.authUser
     const {
       title,
       type,
       description,
       area,
+      categoryId,
       price,
-      bedrooms,
+      parking,
+      guard,
+      rooms,
+      elevators,
+      cameras,
       bathrooms,
       livingrooms,
       status,
@@ -67,9 +73,15 @@ const addUnit = async (req, res, next) => {
       area,
       price,
       images: uploadedImages,
-      bedrooms,
+      rooms,
+      categoryId,
       bathrooms,
       livingrooms,
+      rooms,
+      parking,
+      guard,
+      elevators,
+      cameras,
       waterTank,
       floor,
       status,
@@ -79,8 +91,7 @@ const addUnit = async (req, res, next) => {
       customId,
       nearbyPlaces,
       coordinates: { latitude, longitude }, // Include coordinates
-      createdBy:_id
-
+      // createdBy:_id
     };
 
     const unit = await Unit.create(unitObject);
@@ -117,10 +128,14 @@ const updateUnit = async (req, res, next) => {
       description,
       area,
       price,
-      bedrooms,
-      status,
+      parking,
+      guard,
+      rooms,
+      elevators,
+      cameras,
       bathrooms,
       livingrooms,
+      status,
       waterTank,
       floor,
       maidRoom,
@@ -128,6 +143,7 @@ const updateUnit = async (req, res, next) => {
       location,
       latitude,
       longitude,
+      nearbyPlaces,
     } = req.body;
 
     const unit = await Unit.findOne({id:unitId,createdBy:_id});
@@ -170,11 +186,16 @@ const updateUnit = async (req, res, next) => {
         area,
         price,
         images: updatedImages, // Replace with the updated image array
-        bedrooms,
+        rooms,
+        elevators,
+        cameras,
         bathrooms,
         livingrooms,
         waterTank,
         floor,
+        parking,
+        guard,
+        nearbyPlaces,
         status,
         maidRoom,
         driverRoom,
@@ -216,6 +237,53 @@ const deleteUnit = async (req, res, next) => {
     next(new Error(`Failed to delete unit: ${error.message}`, { cause: 500 }));
   }
 };
+
+
+const getAllUnits = async (req, res) => {
+
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
+
+  const units = await Unit.find().limit(limit).skip(skip)
+
+  res.status(200).json({ message: "Success", units})
+}
+
+
+const getAllUnitsSorted = async (req, res) => {
+
+const apiFeatureInstance = new apiFeatures(Unit.find({}),req.query).sort()
+const units = await apiFeatureInstance.mongooQuery
+
+  res.status(200).json({ message: "Success", units})
+
+}
+
+// get all unit with the full category data
+const getUnitWithCategory = async (req,res,next) => {
+    const unit = await Unit.find().populate([
+        {
+            path: 'categoryId',
+        }
+    ])
+    res.status(200).json({ message: 'Done', unit })
+}
+
+// get all unit by category id
+const getAllUnitByCategoryId = async (req,res,next) => {
+
+ const categoryId = req.query.categoryId; // Get categoryId from query parameter
+ 
+  const units = await Unit.find({
+    categoryId:categoryId
+  })
+
+  if(!units) return next(new Error('in valid category id',{cause:400}))
+
+    res.status(201).json({message:"Done",units})
+}
+
+
 
 // const getAllUnits = async (req, res) => {
 //   const {
@@ -259,34 +327,5 @@ const deleteUnit = async (req, res, next) => {
 //    });
 // };
 
-const getAllUnits = async (req, res) => {
-
-  const {page, size} = req.query
-  const {limit, skip} = pagination({page, size}) 
-
-  const units = await Unit.find().limit(limit).skip(skip)
-
-  res.status(200).json({ message: "Success", units})
-
-
-}
-
-const getAllUnitsSorted = async (req, res) => {
-
-const apiFeatureInstance = new apiFeatures(Unit.find({}),req.query).sort()
-const units = await apiFeatureInstance.mongooQuery
-
-  res.status(200).json({ message: "Success", units})
-
-}
-
-// const getUnitWithNameAndImage = async(req,res,next){
-
-//   const id = req.params.id 
-
-
-
-// } 
-
-export { addUnit, getUnit, updateUnit, deleteUnit, getAllUnits,getAllUnitsSorted };
+export { addUnit, getUnit, updateUnit, deleteUnit, getAllUnits,getAllUnitsSorted,getUnitWithCategory,getAllUnitByCategoryId };
 

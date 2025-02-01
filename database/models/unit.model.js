@@ -12,6 +12,11 @@ const unitSchema = mongoose.Schema({
         enum:["Villa", "Apartment" ,"Duplex", "Penthouse", "Townhouse",
         "Studio Apartment", "Chalet","Warehouse","Office","Retail Shop"]
     },
+    categoryId:{
+        type: Schema.Types.ObjectId,
+        ref: 'category',
+        required:true
+    },
     area:{
         type: Number,
         required: true
@@ -24,9 +29,13 @@ const unitSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    bedrooms:{
+    rooms:{
         type: Number,
         required: true
+    },
+    elevators:{
+        type:Number,
+        required:true
     },
     images: [
         {
@@ -44,34 +53,34 @@ const unitSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    parking:{
+        type:Number,
+        required:true
+    },
+    guard:{
+        type:Number,
+        required:true
+    },
     livingrooms:{
         type: Number,
         required: true
     },
     waterTank:{
-        type: Boolean,
-        required: true
-    },
-    floor:{
         type: Number,
         required: true
     },
     maidRoom:{
-        type: Boolean,
+        type: Number,
         required: true
     },
     status:{
         type:String,
-        default:"Available",
-        enum:["Available","Reserved","Rented/Leased","Sold","Unavailable"]
+        default:"Available for sale",
+        enum:["Available for sale","available for rent","Reserved","Rented/Leased","Sold","Unavailable"]
     },
-    driverRoom:{
-        type: Boolean,
-        required: true
-    },
-    location:{
-        type: String,
-        required: true
+    cameras:{
+        type:Number,
+        required:true
     },
     coordinates: { // ^ for GPS
         latitude: {
@@ -93,7 +102,15 @@ const unitSchema = mongoose.Schema({
     createdBy:{
         type:Schema.Types.ObjectId,
         ref:'Admin'
-    }
+    },
+    location:{
+        type: String,
+        required: true
+    },
+    floor:{
+        type: Number,
+        required: true
+    },
 },{timestamps:true})
 
 export const Unit = mongoose.model("Unit", unitSchema);
