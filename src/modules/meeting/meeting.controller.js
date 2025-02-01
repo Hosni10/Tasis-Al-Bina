@@ -55,7 +55,7 @@ export const createMeeting = async (req, res, next) => {
 
 
 export const callBack =  async (req, res) => {
-    console.log('Received OAuth callback:', req.query);
+    // console.log('Received OAuth callback:', req.query);
 
     const { code } = req.query;
   
@@ -69,15 +69,109 @@ export const callBack =  async (req, res) => {
       oAuth2Client.setCredentials(tokens);
   
       // Log the tokens to confirm they're received
-      console.log('Tokens:', tokens);
+      const accessToken = tokens.access_token;
 
-  
-      // Optionally, you can store these tokens (e.g., in a session, database, or in-memory storage)
-      res.send(`OAuth flow completed successfully! Tokens are now available: ${JSON.stringify(tokens)}`);
+      if (!accessToken) {
+          return res.status(500).send('Error: Access token not found.');
+      }
+
+      // Send styled HTML response with the access token and copy functionality
+      res.send(`
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>OAuth Success</title>
+              <style>
+                  body {
+                      font-family: Arial, sans-serif;
+                      background-color: #f4f7fc;
+                      margin: 0;
+                      padding: 0;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                      height: 100vh;
+                  }
+                  .container {
+                      background-color: #ffffff;
+                      padding: 20px;
+                      border-radius: 8px;
+                      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                      width: 400px;
+                      text-align: center;
+                  }
+                  h1 {
+                      color: #28a745;
+                      font-size: 24px;
+                  }
+                  p {
+                      color: #333;
+                      font-size: 16px;
+                      margin-bottom: 20px;
+                  }
+                  pre {
+                      background-color: #f8f9fa;
+                      padding: 10px;
+                      border-radius: 4px;
+                      font-size: 14px;
+                      overflow-x: auto;
+                      word-wrap: break-word;
+                      text-align: left;
+                  }
+                  .button {
+                      padding: 10px 20px;
+                      background-color: #007bff;
+                      color: #ffffff;
+                      border: none;
+                      border-radius: 4px;
+                      cursor: pointer;
+                      font-size: 16px;
+                      text-decoration: none;
+                      margin-top: 10px;
+                  }
+                  .button:hover {
+                      background-color: #0056b3;
+                  }
+                  .copy-button {
+                      margin-top: 20px;
+                      background-color: #28a745;
+                  }
+                  .copy-button:hover {
+                      background-color: #218838;
+                  }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>OAuth Flow Completed Successfully!</h1>
+                  <p>Your access token is now available:</p>
+                  <pre id="token">${accessToken}</pre>
+                  <button class="button copy-button" id="copyButton">Copy Token to Clipboard</button>
+                  <a href="/" class="button">Go to Homepage</a>
+              </div>
+              <script>
+                  // Function to copy the token to clipboard
+                  document.getElementById('copyButton').addEventListener('click', () => {
+                      const tokenText = document.getElementById('token').innerText;
+                      navigator.clipboard.writeText(tokenText)
+                          .then(() => {
+                              alert('Token copied to clipboard!');
+                          })
+                          .catch(err => {
+                              alert('Failed to copy token: ' + err);
+                          });
+                  });
+              </script>
+          </body>
+          </html>
+      `);
+
     } catch (error) {
       console.error('Error during OAuth callback:', error);
       res.status(500).send('Error processing OAuth callback.');
     }
-}
+  }
 
 

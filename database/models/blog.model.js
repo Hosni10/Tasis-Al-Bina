@@ -7,7 +7,7 @@ const blogSchema = mongoose.Schema({
     },
     author: {
         type: Schema.Types.ObjectId,
-        required: true,
+        // required: true,
         ref: 'Admin'
     },
     description:{                                       // ! meta tag description
@@ -27,6 +27,7 @@ const blogSchema = mongoose.Schema({
     },
     views:{
         type:Number,
+        default:253,
         required:true
     },
     customId:String,
