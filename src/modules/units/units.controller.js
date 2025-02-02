@@ -3,7 +3,6 @@ import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js"
 import { customAlphabet } from 'nanoid'
 import { pagination } from "../../utilities/pagination.js";
 import { apiFeatures } from "../../utilities/apisFeatures.js";
-import { categoryModel } from "../../../database/models/category.model.js";
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 const addUnit = async (req, res, next) => {
@@ -237,7 +236,6 @@ const deleteUnit = async (req, res, next) => {
     next(new Error(`Failed to delete unit: ${error.message}`, { cause: 500 }));
   }
 };
-
 
 const getAllUnits = async (req, res) => {
 

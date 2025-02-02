@@ -2,18 +2,18 @@ import mongoose, { Schema } from "mongoose";
 
 const blogSchema = mongoose.Schema({
     title: {
-        type: String,
-        required: true
-    },
-    author: {
-        type: Schema.Types.ObjectId,
-        // required: true,
-        ref: 'Admin'
-    },
-    description:{                                       // ! meta tag description
         type:String,
-        required:true,
-    },
+        required:true
+      },
+      description: {
+        type:String,
+        required:true
+      },
+    // author: {
+    //     type: Schema.Types.ObjectId,
+    //     // required: true,
+    //     ref: 'Admin'
+    // },
     Keywords: [{ type: String, required: true }], 
     Image: {
         secure_url:{
@@ -24,6 +24,12 @@ const blogSchema = mongoose.Schema({
             type: String,
             required: true,
         },
+    },
+    lang:{
+        type:String,
+        required:true,
+        default:"ar",
+        enum:["ar","en"]
     },
     views:{
         type:Number,
