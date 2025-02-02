@@ -8,13 +8,13 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 export const createBlog = async(req,res,next) => {
   try {
   
-  const { title, author,description, Keywords ,views } = req.body
-
+  const { title,description, Keywords ,views } = req.body
+    const lang = req.query.lang
     if (!req.file) {
         return next(new Error('Please upload Blog image', { cause: 400 }))
     }
 
-    // ~ console.log(req.body);  
+    //  console.log(req.body);  
     // ~ console.log(req.file);   
 
     const customId = nanoid()
@@ -33,8 +33,8 @@ export const createBlog = async(req,res,next) => {
         
         const blogObject = {
           title,
-          author,
           description,
+          lang,   
           Keywords,
           views,
           customId,
@@ -71,14 +71,46 @@ export const getAllBlogs = async(req,res,next) => {
     res.status(201).json({message:`Blogs Number : ${num}`,blogs})
 }
 
+
+export const getAllBlogsAR = async (req, res, next) => {
+  const { page, size, lang } = req.query; // Default to English
+  const { limit, skip } = pagination({ page, size });
+
+  const blogs = await Blog.find().select(`title.${lang} description.${lang} Keywords views Image`);
+  
+  if (!blogs) return next(new Error("No Blogs Found", { cause: 404 }));
+
+  res.status(200).json({ message: `Blogs in ${lang}`, blogs });
+};
+
+export const getAllBlogsEN = async (req, res, next) => {
+  const { page, size, lang  } = req.query; // Default to English
+  const { limit, skip } = pagination({ page, size });
+
+  const blogs = await Blog.find({
+    lang:lang
+  });
+  
+  if (!blogs) return next(new Error("No Blogs Found", { cause: 404 }));
+
+  res.status(200).json({ message: `Blogs in ${lang}`, blogs });
+};
+
+
+
 export const getSingleBlogs = async(req,res,next) => {
 
+  try {
+    
   const id = req.params.id
   const blog = await Blog.findById(id)
 
   if(!blog) return next(new Error("No Blog Didn't Found",{cause:404}))
 
     res.status(201).json({message:`Blog:`,blog})
+  } catch (error) {
+    next(new Error(`fail to upload${error.message}`, { cause: 500 }));
+  }
 }
 
 export const updateBlog = async(req,res,next) => {
@@ -123,17 +155,36 @@ export const updateBlog = async(req,res,next) => {
 export const deleteBlog = async (req, res, next) => {
   try {
 
+    const id = req.params.id
     
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(id);
     if (!blog) {
       return next(new Error('Blog not found', { cause: 404 }));
     }
     
-    const deleteResult = await destroyImage(blog.Image.public_id);    
-    await Blog.deleteMany();
+    await destroyImage(blog.Image.public_id);    
+    await Blog.findByIdAndDelete(id);
+
 
     res.status(200).json({ message: 'Blog and image deleted successfully'});
   } catch (error) {
     next(new Error(`Error deleting blog: ${error.message}`, { cause: 500 }));
+  }
+};
+
+
+
+
+export const getLastThreeBlogs = async (req, res, next) => {
+  try {
+    const blogs = await Blog.find().sort({ createdAt: -1 }).limit(3);
+
+    if (!blogs || blogs.length === 0) {
+      return next(new Error("No Blogs Found", { cause: 404 }));
+    }
+
+    res.status(200).json({ message: "Last 3 Blogs", blogs });
+  } catch (error) {
+    next(error);
   }
 };
