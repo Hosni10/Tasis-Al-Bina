@@ -14,17 +14,18 @@ app.use('/auth', routers.authRouter)
 app.use("/blog",routers.blogsRouter)
 app.use("/review",routers.reviewsRouter)
 app.use("/question",routers.questionRouter)
-app.use('/unit', routers.unitRouter)
 app.use('/message', routers.messageRouter)
 app.use('/category', routers.categoryRouter)
+app.use('/unit', routers.unitRouter)
 app.use('/reservation', routers.reservationRouter)
+app.use('/newsletter', routers.newsletterRouter)
  
-
-
-app.use('*',(req,res,next) => res.status(404).json({message: '404 not found URL'}))
 
 app.use(globalResponse)
 
+
+
+app.use('*',(req,res,next) => res.status(404).json({message: '404 not found URL'}))
 
 
 app.get('/', (req,res)=>res.send('Hellow World!'))

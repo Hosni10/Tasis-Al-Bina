@@ -21,7 +21,7 @@ unitRouter.delete('/deleteunit/:id'/*,isAuth(addUnitEndpoints.ADD_UNIT)*/,delete
 unitRouter.get('/getUnitWithCategory',getUnitWithCategory)
 
 
-// get all unit with the full category data
+// get all unit By category id
 unitRouter.get('/getAllUnitByCategoryId',getAllUnitByCategoryId)
 
-export default unitRouter;
+export default unitRouter;  

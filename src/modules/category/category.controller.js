@@ -8,7 +8,7 @@ export const createcategory = async (req,res,next) => {
     
     try{
  
-     const {title,area,location,latitude,longitude} = req.body
+     const {title,area,description,location,latitude,longitude} = req.body
  
      if (!req.file) {
         return next(new Error('Please upload category image', { cause: 400 }))
@@ -18,7 +18,7 @@ export const createcategory = async (req,res,next) => {
              title:title
          })
      
-         if(iscategoryExisting) return next(new Error("this question is already existing.",{cause:400}))
+         if(iscategoryExisting) return next(new Error("this project is already existing.",{cause:400}))
  
             const customId = nanoid()
 
@@ -31,6 +31,7 @@ export const createcategory = async (req,res,next) => {
          const categoryObject = {
              title,
              area,
+             description,
              location,
              coordinates:{
                 latitude,
@@ -38,19 +39,16 @@ export const createcategory = async (req,res,next) => {
              },
              customId,
              Image: {
-                secure_url: uploadResult.url,       // image url that frontend can access the image 
+                secure_url: uploadResult.url,     // image url that frontend can access the image 
                 public_id: uploadResult.fileId,  // image path on imagekit website
               },
          }
  
          const categoryData = await categoryModel.create(categoryObject) 
-
  
          if(!categoryData) {
            await destroyImage(categoryData.Image.public_id);
-
             return next(new Error("Fail to Upload question",{cause:400}))
-
          }
          
         res.status(201).json({message:"category added successfully",categoryData})
@@ -58,8 +56,6 @@ export const createcategory = async (req,res,next) => {
          next(new Error(`fail to upload${error.message}`, { cause: 500 }));
        }
 }
-
-
 
  export const getAllCategory = async(req,res,next) => {
  
@@ -73,5 +69,19 @@ export const createcategory = async (req,res,next) => {
      const num = category.length
      res.status(201).json({message:`category Number : ${num}`,category})
 }
+
+
+
+export const getAllCategoryTitleImage = async(req,res,next) => {
  
+   const {page, size} = req.query
+   const {limit, skip} = pagination({page, size}) 
+   
+   const category = await categoryModel.find().select(`title Image`).limit(limit).skip(skip)
+   
+   if(!category) return next(new Error("No category Founded",{cause:404}))
+   
+     const num = category.length
+     res.status(201).json({message:`category Number : ${num}`,category})
+}
 

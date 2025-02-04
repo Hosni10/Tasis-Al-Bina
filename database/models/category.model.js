@@ -10,6 +10,10 @@ const categorySchema = new Schema({
         type:Number,
         required: true
     },
+    description:{
+        type:String,
+        required:true
+    },
     location:{
         type:String,
         required:true
