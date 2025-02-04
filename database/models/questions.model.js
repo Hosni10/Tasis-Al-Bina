@@ -9,6 +9,9 @@ const questionsSchema = new Schema({
         type:String,
         required: true
     },
+    lang:{
+        type:String
+    },
     description:{                                       // ! meta tag description
         type:String,
         required:true,

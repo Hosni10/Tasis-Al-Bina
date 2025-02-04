@@ -7,8 +7,11 @@ import { allowedExtensions } from "../../utilities/allowedExtensions.js";
 const router = Router()
 
 
-router.post("/",categoryCont.getAllCategory)
-router.get("/create",multerCloudFunction(allowedExtensions.Image).single('image'),categoryCont.createcategory)
+router.post("/create",multerCloudFunction(allowedExtensions.Image).single('image'),categoryCont.createcategory)
+router.get("/",categoryCont.getAllCategory)
+
+// & get all category (title,Image) only
+router.get("/getAllCategoryTitleImage",categoryCont.getAllCategoryTitleImage)
 
 
 
