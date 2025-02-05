@@ -8,7 +8,7 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 const addUnit = async (req, res, next) => {
   
   try {
-    // const {_id} = req.authUser
+    const {_id} = req.authUser
     const {
       title,
       type,

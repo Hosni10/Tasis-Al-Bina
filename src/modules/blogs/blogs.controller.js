@@ -8,7 +8,9 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 export const createBlog = async(req,res,next) => {
   try {
   
-  const { title,description, Keywords ,views } = req.body
+  const {_id} = req.authUser
+  const { title,author, description, Keywords ,views } = req.body
+    
     const lang = req.query.lang
     if (!req.file) {
         return next(new Error('Please upload Blog image', { cause: 400 }))
@@ -34,7 +36,8 @@ export const createBlog = async(req,res,next) => {
         const blogObject = {
           title,
           description,
-          lang,   
+          lang,  
+          author, 
           Keywords,
           views,
           customId,
