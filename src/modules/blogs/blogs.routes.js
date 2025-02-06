@@ -11,7 +11,7 @@ const router = Router()
 router.get("/",BlogCon.getAllBlogs)
 router.get("/findOne/:id",BlogCon.getSingleBlogs)
 router.post("/create",isAuth(addBlogpoints.ADD_BLOG),multerCloudFunction(allowedExtensions.Image).single('image'),BlogCon.createBlog)
-router.put("/update/:id",multerCloudFunction(allowedExtensions.Image).single('image'),BlogCon.updateBlog)
+router.put("/update/:id",isAuth(addBlogpoints.ADD_BLOG),multerCloudFunction(allowedExtensions.Image).single('image'),BlogCon.updateBlog)
 router.delete("/delete/:id",BlogCon.deleteBlog)
 
 

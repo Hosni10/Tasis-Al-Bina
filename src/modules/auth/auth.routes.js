@@ -11,5 +11,9 @@ const router = Router()
    router.post("/sendEmail",AuthCon.sendEmailBinCode)
    router.post("/add",isAuth(addUsersEndpoints.ADD_USER),AuthCon.addUser)  
 
+
+   router.post('/forget',AuthCon.forgetPassword)
+   router.post('/reset/:token',AuthCon.resetPassword)
+
 export default router
 
