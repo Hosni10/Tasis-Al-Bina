@@ -9,7 +9,7 @@ export const createBlog = async(req,res,next) => {
   try {
   
   const {_id} = req.authUser
-  const { title,author, description, Keywords ,views } = req.body
+  const { title, description, Keywords ,views } = req.body
     
     const lang = req.query.lang
     if (!req.file) {
@@ -37,7 +37,7 @@ export const createBlog = async(req,res,next) => {
           title,
           description,
           lang,  
-          author, 
+          author:_id, 
           Keywords,
           views,
           customId,
@@ -119,10 +119,11 @@ export const getSingleBlogs = async(req,res,next) => {
 export const updateBlog = async(req,res,next) => {
 
   try {
-    const { title, author,description, Keywords ,views } = req.body
+    const { title,description, Keywords ,views } = req.body
     const id = req.params.id
-  
-    const blog = await Blog.findById(id)
+    const {_id} = req.authUser
+
+    const blog = await Blog.findOne({_id:id , author:_id})
   
     if(!blog) {
       return next(new Error("Blog Didn't Found",{cause:404}))
@@ -130,7 +131,6 @@ export const updateBlog = async(req,res,next) => {
   
     if(title) blog.title = title
     if(description) blog.description = description
-    if(Keywords) blog.Keywords = Keywords
     if(Keywords) blog.Keywords = Keywords
     if(views) blog.views = views
 
@@ -191,3 +191,12 @@ export const getLastThreeBlogs = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+
+
+
+
+
+

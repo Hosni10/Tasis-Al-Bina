@@ -1,7 +1,12 @@
 import { userModel } from "../../../database/models/user.model.js"
 import { generateToken, verifyToken } from "../../utilities/tokenFunction.js"
 import crypto from 'crypto';
-import {sendVerificationEmail} from "../../services/sendEmailService.js"
+import {sendEmailService, sendVerificationEmail} from "../../services/sendEmailService.js"
+import { nanoid } from "nanoid"
+import { emailTemplate } from "../../utilities/emailTemplate.js";
+
+
+
 export const signUp = async(req,res,next) => { 
     const {
         firstName,
@@ -41,19 +46,18 @@ export const signUp = async(req,res,next) => {
 }  // ! for admin crate one account and will delete that api 
 
 
-const verificationCodes = new Map(); // Key: email, Value: { code, expiresAt }
-
+const verificationCodesAdd = new Map(); // Key: email, Value: { code, expiresAt }
 export const sendEmailBinCode = async (req, res, next) => {
     const { email } = req.body;
     
    const verificationCode = crypto.randomInt(100000, 999999);
 
-   verificationCodes.set(email, {
+   verificationCodesAdd.set(email, {
     code: verificationCode,
     expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
   });
 
-  console.log(verificationCodes);
+  console.log(verificationCodesAdd);
 
 
    try {
@@ -81,8 +85,8 @@ export const addUser = async (req, res, next) => {
       const EmailExisted = await userModel.findOne({ email: email });
       if (EmailExisted) return next(new Error('This email is already exist'));
   
-   const storedCode = verificationCodes.get(email);
-   console.log(storedCode);
+   const storedCode = verificationCodesAdd.get(email);
+   console.log(storedCode)
    
    if (!storedCode) {
      console.error('No verification code found for email:', email);
@@ -155,3 +159,72 @@ export const login = async(req,res,next) => {
      )
      res.status(200).json({message: 'Login Success', userUpdated})
 }
+
+
+ export const forgetPassword = async(req,res,next) => {
+
+  // console.log(process.env.SALT_ROUNDS);
+  // console.log(process.env.RESET_TOKEN);
+  
+    const {email} = req.body
+
+
+    const isExist = await userModel.findOne({email})
+    if(!isExist){
+        return res.status(400).json({message: "Email not found"})
+    }
+
+    const code = nanoid()
+    const hashcode = pkg.hashSync(code,process.env.SALT_ROUNDS) // ! process.env.SALT_ROUNDS
+    const token = generateToken({
+        payload:{
+            email,
+            sendCode:hashcode,
+        },
+        signature: process.env.RESET_TOKEN, // ! process.env.RESET_TOKEN
+        expiresIn: '1h',
+    })
+    const resetPasswordLink = `http://localhost:3000/auth/reset/${token}`
+    const isEmailSent = sendEmailService({
+        to:email,
+        subject: "Reset Password",
+        message: emailTemplate({
+            link:resetPasswordLink,
+            linkData:"Click Here Reset Password",
+            subject: "Reset Password",
+        }),
+    })
+    if(!isEmailSent){
+        return res.status(400).json({message:"Email not found"})
+    }
+
+    const userupdete = await userModel.findOneAndUpdate(
+        {email},
+        {forgetCode:hashcode},
+        {new: true},
+    )
+    return res.status(200).json({message:"password changed",userupdete})
+}
+
+export const resetPassword = async(req,res,next) => {
+    const {token} = req.params
+    const decoded = verifyToken({token, signature: process.env.RESET_TOKEN}) // ! process.env.RESET_TOKEN
+    const user = await userModel.findOne({
+        email: decoded?.email,
+        fotgetCode: decoded?.sentCode
+    })
+
+    if(!user){
+        return res.status(400).json({message: "you are alreade reset it , try to login"})
+    }
+
+    const {newPassword} = req.body
+
+    user.password = newPassword,
+    user.forgetCode = null
+
+    const updatedUser = await user.save()
+    res.status(200).json({message: "Done",updatedUser})
+}
+
+

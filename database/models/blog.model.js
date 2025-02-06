@@ -9,11 +9,11 @@ const blogSchema = mongoose.Schema({
         type:String,
         required:true
       },
-    // author: {
-    //     type: Schema.Types.ObjectId,
-    //     // required: true,
-    //     ref: 'Admin'
-    // },
+    author: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Admin'
+    },
     Keywords: [{ type: String, required: true }], 
     Image: {
         secure_url:{
