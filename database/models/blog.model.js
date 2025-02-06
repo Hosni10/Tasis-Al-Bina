@@ -12,7 +12,7 @@ const blogSchema = mongoose.Schema({
     author: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'Admin'
+        ref: 'User'
     },
     Keywords: [{ type: String, required: true }], 
     Image: {

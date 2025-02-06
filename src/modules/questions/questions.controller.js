@@ -8,9 +8,7 @@ export const createQuestion = async (req,res,next) => {
     const {
         question,
         answer,
-        description,
-        Keywords,
-        createdBy} = req.body
+        lang} = req.body
 
 
         const isQuestionExisting = await questionsModel.findOne({
@@ -23,9 +21,7 @@ export const createQuestion = async (req,res,next) => {
         const questionObject = {
             question,
             answer,
-            description,
-            Keywords,
-            createdBy
+            lang
         }
 
         const questionData = await questionsModel.create(questionObject) 
@@ -50,8 +46,7 @@ export const UpdateQuestion = async (req,res,next) => {
         const {
             question,
             answer,
-            description,
-            Keywords} = req.body
+            } = req.body
 
         // console.log(req.body);
         
@@ -64,14 +59,9 @@ export const UpdateQuestion = async (req,res,next) => {
 
             if(answer) isQuestionExisting.answer = answer
 
-            if(description) isQuestionExisting.description = description
-
-            if(Keywords) isQuestionExisting.Keywords = Keywords
-
 //  console.log(isQuestionExisting.question);
 //  console.log(isQuestionExisting.answer);
-//  console.log(isQuestionExisting.description);
-//  console.log(isQuestionExisting.Keywords);
+
  
          
  
