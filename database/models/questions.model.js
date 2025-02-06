@@ -9,18 +9,16 @@ const questionsSchema = new Schema({
         type:String,
         required: true
     },
-    lang:{
-        type:String
-    },
-    description:{                                       // ! meta tag description
+    lang:{                                       
         type:String,
         required:true,
+        default:"ar",
+        enum:["ar","en"]
     },
-    Keywords: [{ type: String, required: true }],      // ! كلمات المفتاحية
     createdBy:{
         type:Schema.Types.ObjectId,
-        ref:"Admin",
-        required:true
+        ref:"User",
+        // required:true
     },
 },{timestamps:true})
 

@@ -11,6 +11,12 @@ const reviewsSchema = new Schema({
             required: true,
         },
     },
+    lang:{
+        type:String,
+        required:true,
+        default:"ar",
+        enum:["ar","en"]
+    },
     name:{
         type:String,
         required:true
@@ -30,7 +36,7 @@ const reviewsSchema = new Schema({
     },
     createdBy:{
         type:Schema.Types.ObjectId,
-        ref:"Admin",
+        ref:"User",
         required:true
     },
     customId: String,
