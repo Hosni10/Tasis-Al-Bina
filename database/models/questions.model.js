@@ -1,25 +1,22 @@
 import { model, Schema } from "mongoose";
 
-const questionsSchema = new Schema({
-    question:{
-        type:String,
-        required:true
+const questionsSchema = new Schema(
+  {
+    question: {
+      en: { type: String, required: true },
+      ar: { type: String, required: true },
     },
-    answer:{
-        type:String,
-        required: true
+    answer: {
+      en: { type: String, required: true },
+      ar: { type: String, required: true },
     },
-    lang:{                                       
-        type:String,
-        required:true,
-        default:"ar",
-        enum:["ar","en"]
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    createdBy:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
-        // required:true
-    },
-},{timestamps:true})
+  },
+  { timestamps: true }
+);
 
-export const questionsModel = model("questions",questionsSchema)
+export const questionsModel = model("questions", questionsSchema);

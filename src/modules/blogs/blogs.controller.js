@@ -4,101 +4,137 @@ import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js"
 import { pagination } from "../../utilities/pagination.js"
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
-export const createBlog = async(req,res,next) => {
+export const createBlog = async (req, res, next) => {
   try {
-  
-  const {_id} = req.authUser
-  const { title, description, Keywords ,views } = req.body
+    const { _id } = req.authUser;
+    const { title, description, Keywords, views } = req.body;
+    // console.log(req.body);
     
-    const lang = req.query.lang
+    // Ensure request contains all necessary fields
+    if (!title?.en || !title?.ar || !description?.en || !description?.ar || !Keywords?.en || !Keywords?.ar) {
+      return next(new Error("Please provide title, description, and keywords in both languages", { cause: 400 }));
+    }
+
     if (!req.file) {
-        return next(new Error('Please upload Blog image', { cause: 400 }))
+      return next(new Error("Please upload a Blog image", { cause: 400 }));
     }
 
-    //  console.log(req.body);  
-    // ~ console.log(req.file);   
+    const customId = nanoid();
 
-    const customId = nanoid()
-
-      // console.log(req.file.originalname,"req.file.originalname");
-      // console.log(req.file.buffer,"req.file.buffer");
-      
- 
-        const uploadResult = await imagekit.upload({
-          file: req.file.buffer, 
-          fileName: req.file.originalname,  
-          folder: `${process.env.PROJECT_FOLDER}/Blogs/${customId}`, 
-        });
-     
-        //  console.log(uploadResult);
-        
-        const blogObject = {
-          title,
-          description,
-          lang,  
-          author:_id, 
-          Keywords,
-          views,
-          customId,
-          Image: {
-            secure_url: uploadResult.url,       // image url that frontend can access the image 
-            public_id: uploadResult.fileId,  // image path on imagekit website
-          },
-        };
-    
-        const blog = await Blog.create(blogObject);
-    
-        if (!blog) {
-           await destroyImage(blog.Image.public_id);
-           return next(new Error('Try again later, failed to add', { cause: 400 }));
-        }
-    
-        res.status(200).json({ message: 'Blog added successfully', blog });
-      } catch (error) {
-        next(new Error(`Failed to upload image: ${error.message}`, { cause: 500 }));
-      }
-
-}
-
-
-export const updateBlog = async(req,res,next) => {
-
-  try {
-    const { title,description, Keywords ,views } = req.body
-    const id = req.params.id
-    const {_id} = req.authUser
-
-    const blog = await Blog.findOne({_id:id , author:_id})
-  
-    if(!blog) {
-      return next(new Error("Blog Didn't Found",{cause:404}))
-    }
-  
-    if(title) blog.title = title
-    if(description) blog.description = description
-    if(Keywords) blog.Keywords = Keywords
-    if(views) blog.views = views
-
-    if(req.file){
-      await destroyImage(blog.Image.public_id);  
-  
+    // Upload image to ImageKit
     const uploadResult = await imagekit.upload({
-      file: req.file.buffer, 
-      fileName: req.file.originalname,  
-      folder: `${process.env.PROJECT_FOLDER}/Blogs/${blog.customId}`, 
+      file: req.file.buffer,
+      fileName: req.file.originalname,
+      folder: `${process.env.PROJECT_FOLDER}/Blogs/${customId}`,
     });
-  
-    blog.Image.secure_url = uploadResult.url,
-    blog.Image.public_id = uploadResult.fileId
+
+    const blogObject = {
+      title: {
+        en: title.en,
+        ar: title.ar,
+      },
+      description: {
+        en: description.en,
+        ar: description.ar,
+      },
+      Keywords: {
+        en: Keywords.en, // Convert comma-separated string to array
+        ar: Keywords.ar,
+      },
+      author: _id,
+      views: views || 253, // Default value if not provided
+      customId,
+      Image: {
+        secure_url: uploadResult.url, // Image URL for frontend
+        public_id: uploadResult.fileId, // ImageKit file ID
+      },
+    };
+
+    const blog = await Blog.create(blogObject);
+
+    if (!blog) {
+      await destroyImage(uploadResult.fileId);
+      return next(new Error("Try again later, failed to add", { cause: 400 }));
+    }
+
+    res.status(201).json({ message: "Blog added successfully", blog });
+  } catch (error) {
+    next(new Error(`Failed to create blog: ${error.message}`, { cause: 500 }));
   }
-  
-    await blog.save()
-    res.status(200).json({message : "blog updated successfully",blog})
-  }  catch (error) {
-    next(new Error(`fail to upload${error.message}`, { cause: 500 }));
+};
+
+
+
+export const updateBlog = async (req, res, next) => {
+  try {
+    const { title, description, Keywords, views } = req.body;
+    const id = req.params.id;
+    const { _id } = req.authUser;
+
+    // Find the blog by id and ensure it belongs to the authenticated user
+    const blog = await Blog.findOne({ _id: id, author: _id });
+
+    if (!blog) {
+      return next(new Error("Blog not found", { cause: 404 }));
+    }
+
+    // Validate the required fields for title, description, and Keywords in both languages
+    if (
+      (title?.en && !title?.ar) ||
+      (title?.ar && !title?.en) ||
+      (description?.en && !description?.ar) ||
+      (description?.ar && !description?.en) ||
+      (Keywords?.en && !Keywords?.ar) ||
+      (Keywords?.ar && !Keywords?.en)
+    ) {
+      return next(new Error("Please provide title, description, and keywords in both languages", { cause: 400 }));
+    }
+
+    // Update fields if they exist in the request
+    if (title) {
+      blog.title.en = title.en || blog.title.en;
+      blog.title.ar = title.ar || blog.title.ar;
+    }
+
+    if (description) {
+      blog.description.en = description.en || blog.description.en;
+      blog.description.ar = description.ar || blog.description.ar;
+    }
+
+    if (Keywords) {
+      blog.Keywords.en = Keywords.en || blog.Keywords.en;
+      blog.Keywords.ar = Keywords.ar || blog.Keywords.ar;
+    }
+
+    if (views) blog.views = views;
+
+    // Handle image upload if a new image is provided
+    if (req.file) {
+      // Destroy the old image from ImageKit
+      await destroyImage(blog.Image.public_id);
+
+      // Upload the new image to ImageKit
+      const uploadResult = await imagekit.upload({
+        file: req.file.buffer,
+        fileName: req.file.originalname,
+        folder: `${process.env.PROJECT_FOLDER}/Blogs/${blog.customId}`,
+      });
+
+      // Update the blog's image information
+      blog.Image.secure_url = uploadResult.url;
+      blog.Image.public_id = uploadResult.fileId;
+    }
+
+    // Save the updated blog
+    await blog.save();
+
+    res.status(200).json({ message: "Blog updated successfully", blog });
+  } catch (error) {
+    next(new Error(`Failed to update blog: ${error.message}`, { cause: 500 }));
   }
- 
-}
+};
+
+
 
 export const getAllBlogs = async(req,res,next) => {
 

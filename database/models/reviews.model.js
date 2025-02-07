@@ -1,46 +1,37 @@
 import { model, Schema } from "mongoose";
 
-const reviewsSchema = new Schema({
+const reviewsSchema = new Schema(
+  {
     Image: {
-        secure_url:{
-            type: String,
-            required: true,
-        },
-        public_id: {
-            type: String,
-            required: true,
-        },
+      secure_url: { type: String, required: true },
+      public_id: { type: String, required: true },
     },
-    lang:{
-        type:String,
-        required:true,
-        default:"ar",
-        enum:["ar","en"]
+
+    name: {
+      en: { type: String, required: true },
+      ar: { type: String, required: true },
     },
-    name:{
-        type:String,
-        required:true
+    country: {
+      en: { type: String, required: true },
+      ar: { type: String, required: true },
     },
-    country:{
-        type:String,
-        required: true
+    rate: {
+      type: Number,
+      required: true,
+      enum: [1.0, 2.0, 3.0, 4.0, 5.0],
     },
-    rate:{
-        type:Number,
-        required:true,
-        enum: [1.0, 2.0, 3.0, 4.0, 5.0]
+    description: {
+      en: { type: String, required: true },
+      ar: { type: String, required: true },
     },
-    description:{
-        type:String,
-        required:true
-    },
-    createdBy:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
-        required:true
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     customId: String,
+  },
+  { timestamps: true }
+);
 
-},{timestamps:true})
-
-export const reviewsModel = model("Reviews",reviewsSchema)
+export const reviewsModel = model("Reviews", reviewsSchema);
