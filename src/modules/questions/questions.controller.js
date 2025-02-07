@@ -4,6 +4,8 @@ import { pagination } from "../../utilities/pagination.js"
 
 export const createQuestion = async (req,res,next) => {
    try{
+    // console.log(req.body);
+    
 
     const {
         question,
@@ -48,14 +50,12 @@ export const UpdateQuestion = async (req,res,next) => {
             answer,
             } = req.body
 
-        // console.log(req.body);
+        console.log(req.body);
         
-
-         const isQuestionExisting = await questionsModel.findById(id)
+          const isQuestionExisting = await questionsModel.findById(id)
          if(!isQuestionExisting) return next(new Error("didn't found the question .",{cause:404}))
  
- 
-            if(question) isQuestionExisting.question = question
+          if(question) isQuestionExisting.question = question
 
             if(answer) isQuestionExisting.answer = answer
 
