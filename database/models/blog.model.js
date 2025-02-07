@@ -1,20 +1,23 @@
 import mongoose, { Schema } from "mongoose";
 
-const blogSchema = mongoose.Schema({
+const blogSchema = new Schema({
     title: {
-        type:String,
-        required:true
-      },
-      description: {
-        type:String,
-        required:true
-      },
+        en: { type: String, required: true },
+        ar: { type: String, required: true },
+    },
+    description: {
+        en: { type: String, required: true },
+        ar: { type: String, required: true },
+    },
     author: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'User'
     },
-    Keywords: [{ type: String, required: true }], 
+    Keywords: {
+        en:[{ type: String, required: true }],
+        ar:[{ type: String, required: true }]
+    }, 
     Image: {
         secure_url:{
             type: String,
@@ -25,22 +28,16 @@ const blogSchema = mongoose.Schema({
             required: true,
         },
     },
-    lang:{
-        type:String,
-        required:true,
-        default:"ar",
-        enum:["ar","en"]
-    },
     views:{
         type:Number,
         default:253,
         required:true
     },
-    customId:String,
+    customId: String,
     createdAt: {
         type: Date,
         default: Date.now
     }
-},{timestamps:true})
+}, { timestamps: true });
 
 export const Blog = mongoose.model("Blog", blogSchema);
