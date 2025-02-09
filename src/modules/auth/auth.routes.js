@@ -5,15 +5,25 @@ import { addUsersEndpoints } from "./authEndpoints.js";
 
 const router = Router()
 
+
+router.get('/users',AuthCon.getAllUser) // ! for admin crate one account and will delete that api
+
    router.post('/signUp',AuthCon.signUp) // ! for admin crate one account and will delete that api
    router.post('/signIn',AuthCon.login)
 
    router.post("/sendEmail",AuthCon.sendEmailBinCode)
-   router.post("/add",isAuth(addUsersEndpoints.ADD_USER),AuthCon.addUser)  
+   
+   router.post("/sendEmailNew",AuthCon.sendEmailBinCodeToAdd)
+
+   router.post("/add",AuthCon.addUser)  
 
 
    router.post('/forget',AuthCon.forgetPassword)
-   router.post('/reset/:token',AuthCon.resetPassword)
+   router.post('/reset',AuthCon.resetPassword)
+
+   router.post('/logout',AuthCon.logout)
+
+
 
 export default router
 

@@ -13,6 +13,12 @@ router.get("/",categoryCont.getAllCategory)
 // & get all category (title,Image) only
 router.get("/getAllCategoryTitleImage",categoryCont.getAllCategoryTitleImage)
 
+router.put("/update/:id",categoryCont.updateCategory)
+router.put("/getOne/:id",categoryCont.getOneCategory)
+
+router.delete("/delete/:id",categoryCont.deleteCategory)
+
+
 
 
 export default router
