@@ -8,7 +8,7 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 export const createReview = async(req,res,next) => {
     try {
     
-    const { name,country,rate,description,lang,createdBy } = req.body
+    const { name,country,rate,description,lang } = req.body
   
       if (!req.file) {
           return next(new Error('Please upload profile image', { cause: 400 }))
@@ -36,7 +36,7 @@ export const createReview = async(req,res,next) => {
             country,
             rate,
             description,
-            createdBy,
+            // createdBy,
             lang,
             customId,
             Image: {
