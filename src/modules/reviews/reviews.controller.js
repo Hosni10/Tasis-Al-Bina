@@ -8,7 +8,7 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 export const createReview = async(req,res,next) => {
     try {
     
-    const { name,country,rate,description,lang,createdBy } = req.body
+    const { name,country,rate,description,lang } = req.body
   
       if (!req.file) {
           return next(new Error('Please upload profile image', { cause: 400 }))
@@ -36,7 +36,7 @@ export const createReview = async(req,res,next) => {
             country,
             rate,
             description,
-            createdBy,
+            // createdBy,
             lang,
             customId,
             Image: {
@@ -123,14 +123,14 @@ export const updateReview = async(req,res,next) => {
 
 export const deleteReview= async (req, res, next) => {
   try {
-
+console.log(req.params.id);
     
     const review = await reviewsModel.findById(req.params.id);
     if (!review) {
       return next(new Error('review not found', { cause: 404 }));
     }
     
-    await destroyImage(review.Image.public_id);    
+   await destroyImage(review.Image.public_id);    
     await reviewsModel.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ message: 'review and image deleted successfully'});

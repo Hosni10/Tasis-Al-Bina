@@ -7,7 +7,6 @@ import { emailTemplate } from "../../utilities/emailTemplate.js";
 
 import jwt from "jsonwebtoken";
 
-
 export const signUp = async(req,res,next) => { 
     const {
         firstName,
@@ -48,29 +47,7 @@ export const signUp = async(req,res,next) => {
 
 
 
-const verificationCodesNew = new Map(); // Key: email, Value: { code, expiresAt }
- export const sendEmailBinCodeToAdd = async (req, res, next) => {
-    const { email } = req.body;
-    
-   const verificationCode = crypto.randomInt(100000, 999999);
 
-
-   verificationCodesNew.set(email, {
-    code: verificationCode,
-    expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
-  });
-
-  console.log(verificationCodesNew);
-
-
-   try {
-    await sendVerificationEmail(email, verificationCode);
-    res.status(200).json({ message: 'Verification code sent successfully' });
-  } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ error: 'Failed to send verification code' });
-  }
-};
 
 export const addUser = async (req, res, next) => {
     try {
@@ -250,9 +227,11 @@ const verificationCodesAdd = new Map(); // Key: email, Value: { code, expiresAt 
 export const resetPassword = async(req,res,next) => {
     const {verificationCode,newPassword,email} = req.body
     // const decoded = verifyToken({token, signature: process.env.RESET_TOKEN}) // ! process.env.RESET_TOKEN
+
     const user = await userModel.findOne({
         email: email,
         // fotgetCode:sentCode
+ 
     })
 
     if(!user){
@@ -284,6 +263,8 @@ export const resetPassword = async(req,res,next) => {
     const updatedUser = await user.save()
     res.status(200).json({message: "Done",updatedUser})
 }
+
+
 
 export const logout = async (req, res, next) => {
   try {
@@ -337,3 +318,29 @@ export const logout = async (req, res, next) => {
      const num = user.length
      res.status(201).json({message:`user Number : ${num}`,user})
 }
+
+    const verificationCodesNew = new Map(); // Key: email, Value: { code, expiresAt }
+    export const sendEmailBinCodeToAdd = async (req, res, next) => {
+       const { email } = req.body;
+       
+      const verificationCode = crypto.randomInt(100000, 999999);
+   
+   
+      verificationCodesNew.set(email, {
+       code: verificationCode,
+       expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
+     });
+   
+     console.log(verificationCodesNew);
+   
+   
+      try {
+       await sendVerificationEmail(email, verificationCode);
+       res.status(200).json({ message: 'Verification code sent successfully' });
+     } catch (error) {
+       console.error('Error sending email:', error);
+       res.status(500).json({ error: 'Failed to send verification code' });
+     }
+   };
+
+   
