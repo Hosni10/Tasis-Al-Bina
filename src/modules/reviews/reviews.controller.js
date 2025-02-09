@@ -123,15 +123,15 @@ export const updateReview = async(req,res,next) => {
 
 export const deleteReview= async (req, res, next) => {
   try {
-
+console.log(req.params.id);
     
     const review = await reviewsModel.findById(req.params.id);
     if (!review) {
       return next(new Error('review not found', { cause: 404 }));
     }
     
-    const deleteResult = await destroyImage(review.Image.public_id);    
-    await reviewsModel.deleteMany();
+   await destroyImage(review.Image.public_id);    
+    await reviewsModel.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ message: 'review and image deleted successfully'});
   } catch (error) {

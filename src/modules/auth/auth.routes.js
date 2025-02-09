@@ -9,11 +9,13 @@ const router = Router()
    router.post('/signIn',AuthCon.login)
 
    router.post("/sendEmail",AuthCon.sendEmailBinCode)
-   router.post("/add",isAuth(addUsersEndpoints.ADD_USER),AuthCon.addUser)  
+   router.post("/add",AuthCon.addUser)  
 
-
+   router.get('/users',AuthCon.getAllUser) // ! for admin crate one account and will delete that api
    router.post('/forget',AuthCon.forgetPassword)
-   router.post('/reset/:token',AuthCon.resetPassword)
-
+  
+   router.post("/sendEmailNew",AuthCon.sendEmailBinCode)
+   router.post('/reset',AuthCon.resetPassword)
+   router.post('/logout',AuthCon.logout)
 export default router
 
