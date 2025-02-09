@@ -15,11 +15,11 @@ const questionsSchema = new Schema({
         default:"ar",
         enum:["ar","en"]
     },
-    createdBy:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
-        // required:true
-    },
+    // createdBy:{
+    //     type:Schema.Types.ObjectId,
+    //     ref:"User",
+    //     // required:true
+    // },
 },{timestamps:true})
 
 export const questionsModel = model("questions",questionsSchema)
