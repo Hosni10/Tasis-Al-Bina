@@ -104,6 +104,7 @@ export const addUser = async (req, res, next) => {
 };
 
 import pkg from 'bcrypt'
+import { decode } from "punycode";
 export const login = async(req,res,next) => {
     const {email,password} = req.body
 
@@ -268,42 +269,52 @@ export const resetPassword = async(req,res,next) => {
 
 export const logout = async (req, res, next) => {
   try {
-      const { token } = req.body;
-      if (!token) {
-          return res.status(400).json({ message: "Token is required" });
+    const { token } = req.body;
+    if (!token) {
+      return res.status(400).json({ message: "Token is required" });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.SIGN_IN_TOKEN_SECRET);
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        // إذا انتهت صلاحية التوكن، نقوم فقط بفك تشفيره بدون التحقق منه
+        decoded = jwt.decode(token);
+      } else {
+        return res.status(401).json({ message: "Invalid token" });
       }
+    }
 
-      // Verify token and extract email
-      const decoded = jwt.verify(token, process.env.SIGN_IN_TOKEN_SECRET);
+    if (!decoded || !decoded.email) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
 
-      if (!decoded || !decoded.email) {
-          return res.status(401).json({ message: "Invalid token" });
-      }
+    const email = decoded.email;
 
-      const email = decoded.email; 
+    console.log("Decoded email:", email);
 
-      console.log("Decoded email:", email);
+    // البحث عن المستخدم
+    const user = await userModel.findOne({ email });
 
-      // Find the user
-      const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-      if (!user) {
-          return res.status(404).json({ message: "User not found" });
-      }
+    // تحديث حالة المستخدم إلى "offline" حتى لو كان التوكن منتهي الصلاحية
+    await userModel.findOneAndUpdate(
+      { email },
+      { token: null, status: "offline" },
+      { new: true }
+    );
 
-      // Remove the token and update status
-      await userModel.findOneAndUpdate(
-          { email }, // ✅ Use the defined `email` variable
-          { token: null, status: "offline" },
-          { new: true }
-      );
-
-      res.status(200).json({ message: "Logout successful" });
+    res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-      console.error("Logout Error:", error);
-      res.status(500).json({ message: "Internal server error" });
+    console.error("Logout Error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 
  export const getAllUser = async(req,res,next) => {
@@ -311,16 +322,18 @@ export const logout = async (req, res, next) => {
 //    const {page, size} = req.query
 //    const {limit, skip} = pagination({page, size}) 
    
-   const user = await userModel.find()
+   const users = await userModel.find()
    
-   if(!user) return next(new Error("No user Founded",{cause:404}))
+   if(!users) return next(new Error("No users Founded",{cause:404}))
    
-     const num = user.length
-     res.status(201).json({message:`user Number : ${num}`,user})
+     const num = users.length
+     res.status(201).json({message:`users Number : ${num}`,users})
 }
 
     const verificationCodesNew = new Map(); // Key: email, Value: { code, expiresAt }
     export const sendEmailBinCodeToAdd = async (req, res, next) => {
+
+
        const { email } = req.body;
        
       const verificationCode = crypto.randomInt(100000, 999999);
@@ -344,3 +357,123 @@ export const logout = async (req, res, next) => {
    };
 
    
+
+   export const getOneUser= async (req, res, next) => {
+      try {
+
+  const authHeader = req.headers['authorization'];
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(400).json({ message: "Token is required" });
+    }
+
+    const token = authHeader.split(' ')[1];
+    
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.SIGN_IN_TOKEN_SECRET);
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        // إذا انتهت صلاحية التوكن، نقوم فقط بفك تشفيره بدون التحقق منه
+        decoded = jwt.decode(token);
+      } else {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+    }
+
+    if (!decoded || !decoded._id) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+    
+
+    
+        const id = decoded._id;
+        
+        
+        
+        const user = await userModel.findById(id);
+        if (!user) {
+          return next(new Error('user not found', { cause: 404 }));
+        }
+
+        
+         
+        res.status(200).json({ message: 'Done',user});
+      } catch (error) {
+        next(new Error(`Error deleting user: ${error.message}`, { cause: 500 }));
+      }
+    };
+   
+
+export const updateUser = async(req,res,next) => {
+      // console.log("ddd");
+      // console.log(req.body);
+      
+      
+      const authHeader = req.headers['authorization'];
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(400).json({ message: "Token is required" });
+      }
+      
+      const token = authHeader.split(' ')[1];
+      
+      let decoded;
+      
+      try {
+        decoded = jwt.verify(token, process.env.SIGN_IN_TOKEN_SECRET);
+      } catch (error) {
+        if (error.name === "TokenExpiredError") {
+          // إذا انتهت صلاحية التوكن، نقوم فقط بفك تشفيره بدون التحقق منه
+          decoded = jwt.decode(token);
+        } else {
+          return res.status(401).json({ message: "Invalid token" });
+        }
+      }
+        
+      if (!decoded || !decoded._id) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+      
+  
+      
+          const id = decoded._id;
+          
+          
+          
+      try {
+         const {firstName,
+          middleName,
+          lastName,
+          phoneNumber,
+          } = req.body
+      
+        const user = await userModel.findById(id)
+      
+        if(!user) {
+          return next(new Error("user Didn't Found",{cause:400}))
+        }
+      //   microservice archeture and distributed systems
+        if(firstName) user.firstName = firstName
+        if(middleName) user.middleName = middleName
+        if(lastName) user.lastName = lastName
+        if(phoneNumber) user.phoneNumber = phoneNumber
+        
+      //   if(req.file){
+      //     await destroyImage(user.Image.public_id);  
+      
+      // //   const uploadResult = await imagekit.upload({
+      // //     file: req.file.buffer, 
+      // //     fileName: req.file.originalname,  
+      // //     folder: `${process.env.PROJECT_FOLDER}/user/${user.customId}`, 
+      // //   });
+      
+      // //   user.Image.secure_url = uploadResult.url,
+      // //   user.Image.public_id = uploadResult.fileId
+      // // }
+      
+        await user.save()
+        res.status(200).json({message : "user updated successfully",user})
+      }  catch (error) {
+        next(new Error(`fail to upload${error.message}`, { cause: 500 }));
+      }
+     
+    }

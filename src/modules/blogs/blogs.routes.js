@@ -17,8 +17,8 @@ router.delete("/delete/:id",BlogCon.deleteBlog)
 
 router.get("/getLastThree",BlogCon.getLastThreeBlogs)
 
-router.get("/getAllBlogsAR",BlogCon.getAllBlogsAR)
-router.get("/getAllBlogsEN",BlogCon.getAllBlogsEN)
+router.get("/ar",BlogCon.getAllBlogsAR)
+router.get("/en",BlogCon.getAllBlogsEN)
 
 
 

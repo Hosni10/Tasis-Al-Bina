@@ -138,3 +138,30 @@ console.log(req.params.id);
     next(new Error(`Error deleting review: ${error.message}`, { cause: 500 }));
   }
 };
+
+
+
+export const getAllReviewAR = async (req,res,next) => {
+  try{
+
+       const reviews = await reviewsModel.find({lang:"ar"})
+       if(!reviews) return next(new Error("didn't found the review .",{cause:404}))
+       
+       res.status(201).json({message : `Review`,reviews})
+     }  catch (error) {
+       next(new Error(`fail to upload ${error.message}`, { cause: 500 }));
+     }
+}
+
+
+export const getAllReviewEN = async (req,res,next) => {
+  try{
+
+       const reviews = await reviewsModel.find({lang:"en"})
+       if(!reviews) return next(new Error("didn't found the review .",{cause:404}))
+       
+       res.status(201).json({message : `Review: `,reviews})
+     }  catch (error) {
+       next(new Error(`fail to upload ${error.message}`, { cause: 500 }));
+     }
+}

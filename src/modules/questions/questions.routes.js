@@ -7,8 +7,13 @@ const router = Router()
 router.post("/create",questionCon.createQuestion)
 router.put("/update/:id",questionCon.UpdateQuestion)
 router.get("/",questionCon.getAllQuestion)
-router.get("/:id",questionCon.getSingleQuestion)
+router.get("/getOne/:id",questionCon.getSingleQuestion)
 router.delete("/:id",questionCon.deleteQuestion)
+
+
+router.get("/ar",questionCon.getAllQuestionAR)
+router.get("/en",questionCon.getAllQuestionEN)
+
 
 
 export default router
