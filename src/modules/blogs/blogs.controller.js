@@ -9,9 +9,9 @@ export const createBlog = async(req,res,next) => {
   try {
   
   const {_id} = req.authUser
-  const { title, description, Keywords ,views } = req.body
+  const { title, description, Keywords ,views, lang } = req.body
     
-    const lang = req.query.lang
+    // const lang = req.query.lang
     if (!req.file) {
         return next(new Error('Please upload Blog image', { cause: 400 }))
     }
