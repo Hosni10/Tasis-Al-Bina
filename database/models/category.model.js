@@ -28,6 +28,12 @@ const categorySchema = new Schema({
             required: true,
         },
     },
+    lang:{
+        type:String,
+        default:"ar",
+        enum:["ar","en"],
+        required:true,
+    },
     coordinates: { // ^ for GPS
         latitude: {
             type: Number,

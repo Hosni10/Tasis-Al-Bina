@@ -76,28 +76,23 @@ export const getAllBlogs = async(req,res,next) => {
 
 
 export const getAllBlogsAR = async (req, res, next) => {
-  const { page, size, lang } = req.query; // Default to English
-  const { limit, skip } = pagination({ page, size });
 
-  const blogs = await Blog.find().select(`title.${lang} description.${lang} Keywords views Image`);
+
+  const blogs = await Blog.find({lang: "ar"})
   
   if (!blogs) return next(new Error("No Blogs Found", { cause: 404 }));
 
-  res.status(200).json({ message: `Blogs in ${lang}`, blogs });
-};
+  res.status(200).json({ message: `Done`, blogs });
+}
 
 export const getAllBlogsEN = async (req, res, next) => {
-  const { page, size, lang  } = req.query; // Default to English
-  const { limit, skip } = pagination({ page, size });
 
-  const blogs = await Blog.find({
-    lang:lang
-  });
+  const blogs = await Blog.find({lang:"en"});
   
   if (!blogs) return next(new Error("No Blogs Found", { cause: 404 }));
 
-  res.status(200).json({ message: `Blogs in ${lang}`, blogs });
-};
+  res.status(200).json({ message: `Done`, blogs });
+}
 
 
 

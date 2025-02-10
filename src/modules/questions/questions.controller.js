@@ -115,3 +115,36 @@ export const deleteQuestion = async (req,res,next) => {
        }
 }
 
+
+export const getAllQuestionAR = async (req,res,next) => {
+  try{
+
+    const {page, size} = req.query
+    const {limit, skip} = pagination({page, size}) 
+
+       const questionData = await questionsModel.find({lang:"ar"})
+       if(!questionData) return next(new Error("didn't found the question .",{cause:404}))
+       
+          const num = questionData.length
+       res.status(201).json({message : `Questions: ${num}`,questionData})
+     }  catch (error) {
+       next(new Error(`fail to upload ${error.message}`, { cause: 500 }));
+     }
+}
+
+
+export const getAllQuestionEN = async (req,res,next) => {
+  try{
+
+    const {page, size} = req.query
+    const {limit, skip} = pagination({page, size}) 
+
+       const questionData = await questionsModel.find({lang:"en"})
+       if(!questionData) return next(new Error("didn't found the question .",{cause:404}))
+       
+          const num = questionData.length
+       res.status(201).json({message : `Questions: ${num}`,questionData})
+     }  catch (error) {
+       next(new Error(`fail to upload ${error.message}`, { cause: 500 }));
+     }
+}
