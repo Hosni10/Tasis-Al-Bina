@@ -9,9 +9,9 @@ export const createBlog = async(req,res,next) => {
   try {
   
   const {_id} = req.authUser
-  const { title,author, description, Keywords ,views } = req.body
+  const { title,lang, description, Keywords ,views } = req.body
     
-    const lang = req.query.lang
+    // const lang = req.query.lang
     if (!req.file) {
         return next(new Error('Please upload Blog image', { cause: 400 }))
     }
@@ -37,7 +37,7 @@ export const createBlog = async(req,res,next) => {
           title,
           description,
           lang,  
-          author, 
+          author:_id, 
           Keywords,
           views,
           customId,
@@ -121,7 +121,7 @@ export const updateBlog = async(req,res,next) => {
   try {
     const { title, author,description, Keywords ,views } = req.body
     const id = req.params.id
-  
+    console.log(req.body);
     const blog = await Blog.findById(id)
   
     if(!blog) {
