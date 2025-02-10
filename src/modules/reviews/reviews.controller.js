@@ -8,7 +8,7 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 export const createReview = async(req,res,next) => {
     try {
     
-    const { name,country,rate,description,createdBy  } = req.body
+    const { name,country,rate,description,lang,createdBy } = req.body
   
       if (!req.file) {
           return next(new Error('Please upload profile image', { cause: 400 }))
@@ -37,6 +37,7 @@ export const createReview = async(req,res,next) => {
             rate,
             description,
             createdBy,
+            lang,
             customId,
             Image: {
               secure_url: uploadResult.url,       // image url that frontend can access the image 
@@ -69,7 +70,7 @@ export const getAllReviews = async(req,res,next) => {
   if(!reviews) return next(new Error("No reviews Founded",{cause:404}))
 
     const num = reviews.length
-    res.status(201).json({message:`reviews Number : ${num}`,reviews})
+    res.status(201).json({message:"Done",reviews})
 }
 
 export const getSingleReview = async(req,res,next) => {
