@@ -8,7 +8,7 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 const addUnit = async (req, res, next) => {
   
   try {
-    const {_id} = req.authUser
+    // const {_id} = req.authUser
     const {
       title,
       type,
@@ -32,6 +32,7 @@ const addUnit = async (req, res, next) => {
       latitude,
       longitude,
       nearbyPlaces,
+      lang
     } = req.body;
 
     // console.log(req.body);
@@ -89,6 +90,7 @@ const addUnit = async (req, res, next) => {
       location,
       customId,
       nearbyPlaces,
+      lang,
       coordinates: { latitude, longitude }, // Include coordinates
       // createdBy:_id
     };
@@ -268,12 +270,30 @@ const getUnitWithCategory = async (req,res,next) => {
 }
 
 // get all unit by category id
+
 const getAllUnitByCategoryId = async (req,res,next) => {
 
- const categoryId = req.query.categoryId; // Get categoryId from query parameter
+  const categoryId = req.params.id; // Get categoryId from query parameter
+ //  console.log(categoryId);
+  
+  
+   const units = await Unit.find({
+     categoryId:categoryId,
+    })
+ 
+   if(!units) return next(new Error('in valid category id',{cause:400}))
+ 
+     res.status(201).json({message:"Done",units})
+ }
+ const getAllUnitByCategoryIdAR = async (req,res,next) => {
+
+ const categoryId = req.params.id; // Get categoryId from query parameter
+//  console.log(categoryId);
+ 
  
   const units = await Unit.find({
-    categoryId:categoryId
+    categoryId:categoryId,
+    lang:"ar"
   })
 
   if(!units) return next(new Error('in valid category id',{cause:400}))
@@ -281,49 +301,24 @@ const getAllUnitByCategoryId = async (req,res,next) => {
     res.status(201).json({message:"Done",units})
 }
 
+const getAllUnitByCategoryIdEN = async (req,res,next) => {
 
+  const categoryId = req.params.id; // Get categoryId from query parameter
+ //  console.log(categoryId);
+  
+  
+   const units = await Unit.find({
+     categoryId:categoryId,
+     lang:"en"
+   })
+ 
+   if(!units) return next(new Error('in valid category id',{cause:400}))
+ 
+     res.status(201).json({message:"Done",units})
+ }
 
-// const getAllUnits = async (req, res) => {
-//   const {
-//     limit = 10,
-//     page = 1,
-//     sortBy = "price",
-//     sortOrder = "desc",
-//     search = "",
-//   } = req.query;
-//   const query = {};
-//   if (search) {
-//     query.$or = [
-//       { title: { $regex: search, $options: "i" } },
-//       { description: { $regex: search, $options: "i" } },
-//       { location: { $regex: search, $options: "i" } },
-//     ];
-//   }
-//   Object.keys(filters).forEach((key) => {
-//     if (filters[key]) {
-//       query[key] = filters[key];
-//     }
-//   });
+ 
 
-//   const skip = (page - 1) * limit;
-
-//   const units = await Unit.find(query)
-
-//     .sort({ [sortOrder]: sortBy === "desc" ? -1 : 1 })
-//     .skip(skip)
-//     .limit(limit);
-
-//     const totalDocs = await Unit.countDocuments(query);
-
-//   res.status(200).json({ message: "Success", units ,
-//     pagination: {
-//       page,
-//       limit,
-//       totalDocs,
-//       totalPages: Math.ceil(totalDocs / limit),
-//     },
-//    });
-// };
-
-export { addUnit, getUnit, updateUnit, deleteUnit, getAllUnits,getAllUnitsSorted,getUnitWithCategory,getAllUnitByCategoryId };
+ 
+export { addUnit, getUnit, updateUnit, deleteUnit, getAllUnits,getAllUnitsSorted,getUnitWithCategory,getAllUnitByCategoryId,getAllUnitByCategoryIdAR,getAllUnitByCategoryIdEN };
 
