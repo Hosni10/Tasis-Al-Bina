@@ -3,21 +3,31 @@ import { generateToken, verifyToken } from '../utilities/tokenFunction.js';
 export const isAuth = (roles) => {
   return async (req, res, next) => {
     try {
+      
+
+      console.log("Authorization Header:");
+      
       const { authorization } = req.headers;
       if (!authorization) {
         return next(new Error('Please login first', { cause: 400 }));
       }
 
+
+      
       const splitedToken = authorization.split(' ')[1];
 
+        console.log(splitedToken);
+      
       try {
         // Verify token
         const decodedData = verifyToken({
           token: splitedToken,
           signature: process.env.SIGN_IN_TOKEN_SECRET,
         });
+        
 
-        // console.log('Decoded Token Data:', decodedData);
+        
+        console.log('Decoded Token Data:', decodedData);
 
         // Find user
         const findUser = await userModel.findById(decodedData._id, 'email userName role');
@@ -25,10 +35,13 @@ export const isAuth = (roles) => {
           return next(new Error('Please SignUp', { cause: 400 }));
         }
 
+        console.log("User Data:",findUser.role);
+        console.log("Roles Allowed:",roles);
+        
         // Check role
         // console.log('Roles Allowed:', roles);
         // console.log('User Role:', findUser.role);
-
+        
         if (!roles.includes(findUser.role)) {
           return next(new Error('Unauthorized to access this API', { cause: 403 }));
         }
