@@ -1,5 +1,5 @@
 import express from 'express';
-import { addUnit, deleteUnit, getAllUnits, getAllUnitsSorted, getUnit, getUnitWithCategory, updateUnit,getAllUnitByCategoryId } from './units.controller.js';
+import { addUnit, deleteUnit, getAllUnits, getAllUnitsSorted, getUnit, getUnitWithCategory, updateUnit,getAllUnitByCategoryId, getAllUnitByCategoryIdEN, getAllUnitByCategoryIdAR } from './units.controller.js';
 import { allowedExtensions } from '../../utilities/allowedExtensions.js';
 import { multerCloudFunction } from '../../services/multerCloud.js';
 // import { addUnitEndpoints } from './unitsEndPoints.js';
@@ -22,6 +22,16 @@ unitRouter.get('/getUnitWithCategory',getUnitWithCategory)
 
 
 // get all unit By category id
-unitRouter.get('/getAllUnitByCategoryId',getAllUnitByCategoryId)
+
+unitRouter.get('/getAllUnitByCategoryId/:id',getAllUnitByCategoryId)
+unitRouter.get('/getAllUnitByCategoryIdAR/:id',getAllUnitByCategoryIdAR)
+unitRouter.get('/getAllUnitByCategoryIdEN/:id',getAllUnitByCategoryIdEN)
+
+
+
+
+
+
+
 
 export default unitRouter;  
