@@ -107,6 +107,12 @@ const unitSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    lang:{
+        type:String,
+        required:true,
+        default:"ar",
+        enum:["ar","en"]
+    },
     floor:{
         type: Number,
         required: true
