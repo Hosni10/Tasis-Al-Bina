@@ -18,11 +18,31 @@ export const generateToken = ({
 export const verifyToken = ({
   token = '',
   signature = process.env.DEFAULT_SIGNATURE, // ! process.env.DEFAULT_SIGNATURE
+
 } = {}) => {
   // check if the payload is empty object
+  // console.log("token from verifyToken",token);
+  
   if (!token) {
     return false
   }
-  const data = jwt.verify(token, signature)
+  
+  let data;
+  
+          try {
+                 data = jwt.verify(token, signature);
+               } catch (error) {
+                 if (error.name === "TokenExpiredError") {
+                   // إذا انتهت صلاحية التوكن، نقوم فقط بفك تشفيره بدون التحقق منه
+                   data = jwt.decode(token);
+                 } else {
+                   return res.status(401).json({ message: "Invalid token" });
+                 }
+               }
+
+        //  console.log(data);
+         
+       
+  
   return data
 }

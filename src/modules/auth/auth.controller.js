@@ -127,7 +127,7 @@ export const login = async(req,res,next) => {
             role: userExsist.role
         },
         signature: process.env.SIGN_IN_TOKEN_SECRET,  
-        expiresIn: '1h',
+        // expiresIn: '1h',
      })
      
 
@@ -476,4 +476,51 @@ export const updateUser = async(req,res,next) => {
         next(new Error(`fail to upload${error.message}`, { cause: 500 }));
       }
      
+    }
+
+
+    export const deleteUser = async (req,res,next) => {
+        try{
+          const id = req.params.id
+            
+          
+             const user = await userModel.findByIdAndDelete(id)
+             if(!user) return next(new Error("didn't found the question .",{cause:404}))
+             
+    
+             res.status(201).json({message : "User Deleted sucessfully"})
+           }  catch (error) {
+             next(new Error(`fail to upload ${error.message}`, { cause: 500 }));
+           }
+    }
+
+
+    export const updateUserFromSuperAdmin = async(req,res,next) => {
+     
+     
+      const id = req.params._id;
+          
+      try {
+         const {firstName,
+          middleName,
+          lastName,
+          phoneNumber,
+          } = req.body
+      
+        const user = await userModel.findById(id)
+      
+        if(!user) {
+          return next(new Error("user Didn't Found",{cause:400}))
+        }
+ 
+        if(firstName) user.firstName = firstName
+        if(middleName) user.middleName = middleName
+        if(lastName) user.lastName = lastName
+        if(phoneNumber) user.phoneNumber = phoneNumber
+      
+        await user.save()
+        res.status(200).json({message : "user updated successfully",user})
+      }  catch (error) {
+        next(new Error(`fail to upload${error.message}`, { cause: 500 }));
+      }
     }
