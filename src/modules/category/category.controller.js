@@ -75,8 +75,6 @@ export const createcategory = async (req, res, next) => {
      res.status(201).json({message:`category Number : ${num}`,category})
 }
 
-
-
 export const getAllCategoryTitleImage = async(req,res,next) => {
  
    const {page, size} = req.query
@@ -100,7 +98,7 @@ export const getOneCategory= async (req, res, next) => {
        return next(new Error('category not found', { cause: 404 }));
      }
       
-     res.status(200).json({ message: 'category and image deleted successfully',category});
+     res.status(200).json({ message: 'Done',category});
    } catch (error) {
      next(new Error(`Error deleting category: ${error.message}`, { cause: 500 }));
    }
@@ -164,3 +162,31 @@ export const deleteCategory= async (req, res, next) => {
     next(new Error(`Error deleting category: ${error.message}`, { cause: 500 }));
   }
 };
+
+
+
+export const getAllCategoryTitleImageAR = async(req,res,next) => {
+ 
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
+  
+  const category = await categoryModel.find({lang:"ar"}).select(`title Image`).limit(limit).skip(skip)
+  
+  if(!category) return next(new Error("No category Founded",{cause:404}))
+  
+    const num = category.length
+    res.status(201).json({message:`category Number : ${num}`,category})
+}
+
+export const getAllCategoryTitleImageEN = async(req,res,next) => {
+ 
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
+  
+  const category = await categoryModel.find({lang:"en"}).select(`title Image`).limit(limit).skip(skip)
+  
+  if(!category) return next(new Error("No category Founded",{cause:404}))
+  
+    const num = category.length
+    res.status(201).json({message:`category Number : ${num}`,category})
+}

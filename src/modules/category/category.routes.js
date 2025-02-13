@@ -14,10 +14,12 @@ router.get("/",categoryCont.getAllCategory)
 router.get("/getAllCategoryTitleImage",categoryCont.getAllCategoryTitleImage)
 
 router.put("/update/:id",categoryCont.updateCategory)
-router.put("/getOne/:id",categoryCont.getOneCategory)
+router.get("/getOne/:id",categoryCont.getOneCategory)
 
 router.delete("/delete/:id",categoryCont.deleteCategory)
 
+router.get("/getAllCategoryTitleImageAR",categoryCont.getAllCategoryTitleImageAR)
+router.get("/getAllCategoryTitleImageEN",categoryCont.getAllCategoryTitleImageEN)
 
 
 
