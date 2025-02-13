@@ -46,6 +46,8 @@ export const isAuth = (roles) => {
           return next(new Error('Unauthorized to access this API', { cause: 403 }));
         }
 
+        // If the role is correct, attach the user to the request object
+        console.log("allowed");
         req.authUser = findUser;
         next();
       } catch (error) {

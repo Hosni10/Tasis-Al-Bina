@@ -30,6 +30,7 @@ export const initiateApp = (app, express) => {
     app.use('/unit', routers.unitRouter);
     app.use('/reservation', routers.reservationRouter);
     app.use('/newsletter', routers.newsletterRouter);
+    // app.use('/interested', routers.interestedRoutes);
 
     app.use(globalResponse);
 

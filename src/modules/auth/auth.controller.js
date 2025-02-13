@@ -51,9 +51,10 @@ export const signUp = async(req,res,next) => {
 
 export const addUser = async (req, res, next) => {
     try {
+      console.log('Request body:', JSON.stringify(req.body, null, 2));
 
-        console.log(req.body);
-        
+      console.log(req.body);
+      
       const {
         firstName,
         middleName,
@@ -96,6 +97,7 @@ export const addUser = async (req, res, next) => {
       });
   
       const saveUser = await user.save();
+      console.log('User added successfully:', saveUser);
       res.status(201).json({ message: 'User added successfully', saveUser });
     } catch (error) {
       console.error('Error adding user:', error);
@@ -498,7 +500,8 @@ export const updateUser = async(req,res,next) => {
     export const updateUserFromSuperAdmin = async(req,res,next) => {
      
      
-      const id = req.params._id;
+      const id = req.params.id;
+          console.log(id);
           
       try {
          const {firstName,
