@@ -116,9 +116,9 @@ export const updateBlog = async(req,res,next) => {
   try {
     const { title,description, Keywords ,views } = req.body
     const id = req.params.id
-    const {_id} = req.authUser
+    // const {_id} = req.authUser
 
-    const blog = await Blog.findOne({_id:id , author:_id})
+    const blog = await Blog.findOne({_id:id})
   
     if(!blog) {
       return next(new Error("Blog Didn't Found",{cause:404}))
