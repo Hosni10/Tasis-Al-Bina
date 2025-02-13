@@ -7,9 +7,11 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 const addUnit = async (req, res, next) => {
   
+ 
+  const unitData = JSON.parse(req.body.data)
+
   try {
-    // const {_id} = req.authUser
-    const {
+     const {
       title,
       type,
       description,
@@ -29,22 +31,28 @@ const addUnit = async (req, res, next) => {
       maidRoom,
       driverRoom,
       location,
-      latitude,
-      longitude,
+      coordinates,
       nearbyPlaces,
-      lang
-    } = req.body;
+      lang,
+     } = unitData;
 
+
+   
+ 
     // console.log(req.body);
     // console.log("nearbyPlaces",nearbyPlaces);
     // console.log("nearbyPlaces",nearbyPlaces.place[0]);
     // console.log("nearbyPlaces",nearbyPlaces.timeInMinutes[0]);
     // console.log(place);
     // console.log(timeInMinutes);
+     
 
-    if (!latitude || !longitude) {
+    if (!coordinates.latitude || !coordinates.longitude) {
       return next(new Error("Please provide both latitude and longitude for the unit's GPS coordinates.", { cause: 400 }));
     }
+
+
+     
 
     if (!req.files || req.files.length === 0) {
       return next(new Error("Please upload at least one image for the unit", { cause: 400 }));
@@ -91,10 +99,11 @@ const addUnit = async (req, res, next) => {
       customId,
       nearbyPlaces,
       lang,
-      coordinates: { latitude, longitude }, // Include coordinates
+      coordinates 
       // createdBy:_id
     };
 
+     
     const unit = await Unit.create(unitObject);
 
     if (!unit) {
@@ -121,96 +130,63 @@ const getUnit = async (req, res) => {
 
 const updateUnit = async (req, res, next) => {
   try {
-    const {_id} = req.authUser
-    const { unitId } = req.params
-    const {
-      title,
-      type,
-      description,
-      area,
-      price,
-      parking,
-      guard,
-      rooms,
-      elevators,
-      cameras,
-      bathrooms,
-      livingrooms,
-      status,
-      waterTank,
-      floor,
-      maidRoom,
-      driverRoom,
-      location,
-      latitude,
-      longitude,
-      nearbyPlaces,
-    } = req.body;
+    const unitData = JSON.parse(req.body.data)
+    const unitId = req.params.id // Fixed params access
 
-    const unit = await Unit.findOne({id:unitId,createdBy:_id});
-    if (!unit) return res.status(404).json({ message: "Unit not found , you are not the owner of this unit" });
+    const unit = await Unit.findById(unitId) // Changed to findById
+    if (!unit) {
+      return res.status(404).json({ message: "Unit not found" })
+    }
 
-    let updatedImages = unit.images || []; 
+    let updatedImages = unit.images || []
 
-    if (req.files && req.files.length > 0) {
+    if (req.files?.length > 0) {
+      // Delete old images
+      await Promise.all(
+        unit.images.map(image => 
+          imagekit.deleteFile(image.public_id)
+            .catch(err => console.error(`Failed to delete image: ${image.public_id}`, err.message))
+        )
+      )
 
-      for (const image of unit.images) {
-        try {
-          await imagekit.deleteFile(image.public_id); 
-        } catch (err) {
-          console.error(`Failed to delete image: ${image.public_id}`, err.message);
-        }
-      }
-
-      const newImages = [];
-      for (const file of req.files) {
-        const uploadResult = await imagekit.upload({
-          file: file.buffer, // Image buffer
-          fileName: file.originalname, // Original file name
-          folder: `${process.env.PROJECT_FOLDER}/Units/${unit.customId}`, // Folder path in ImageKit
-        });
-        newImages.push({
-          secure_url: uploadResult.url,
-          public_id: uploadResult.fileId,
-        });
-      }
-
-      updatedImages = newImages;
+      // Upload new images
+      updatedImages = await Promise.all(
+        req.files.map(file => 
+          imagekit.upload({
+            file: file.buffer,
+            fileName: file.originalname,
+            folder: `${process.env.PROJECT_FOLDER}/Units/${unit.customId}`,
+          }).then(result => ({
+            secure_url: result.url,
+            public_id: result.fileId,
+          }))
+        )
+      )
     }
 
     const updatedUnit = await Unit.findByIdAndUpdate(
-      req.params.id,
+      unitId,
       {
-        title,
-        type,
-        description,
-        area,
-        price,
-        images: updatedImages, // Replace with the updated image array
-        rooms,
-        elevators,
-        cameras,
-        bathrooms,
-        livingrooms,
-        waterTank,
-        floor,
-        parking,
-        guard,
-        nearbyPlaces,
-        status,
-        maidRoom,
-        driverRoom,
-        location,
-        coordinates: { latitude, longitude }, 
+        ...unitData,
+        images: updatedImages,
+        coordinates: {
+          latitude: parseFloat(unitData.coordinates.latitude),
+          longitude: parseFloat(unitData.coordinates.longitude),
+        }
       },
-      { new: true } 
-    );
+      { new: true }
+    )
 
-    res.status(200).json({ message: "Unit updated successfully", updatedUnit });
+    if (!updatedUnit) {
+      return res.status(404).json({ message: "Unit not found" })
+    }
+    // console.log(updatedUnit);
+    
+    res.status(200).json({ message: "Unit updated successfully", updatedUnit })
   } catch (error) {
-    next(new Error(`Failed to update the unit: ${error.message}`, { cause: 500 }));
+    next(new Error(`Failed to update the unit: ${error.message}`, { cause: 500 }))
   }
-};
+}
 
 const deleteUnit = async (req, res, next) => {
   try {
@@ -315,7 +291,7 @@ const getAllUnitByCategoryIdEN = async (req,res,next) => {
    if(!units) return next(new Error('in valid category id',{cause:400}))
  
      res.status(201).json({message:"Done",units})
- }
+}
 
  
 

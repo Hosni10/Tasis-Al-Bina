@@ -44,6 +44,9 @@ const categorySchema = new Schema({
             required: true
         }
     },
+    customId:{
+        type:String,
+    }
 },{timestamps:true})
 
 export const categoryModel = model("category",categorySchema)

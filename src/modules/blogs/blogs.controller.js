@@ -8,7 +8,7 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 export const createBlog = async(req,res,next) => {
   try {
   
-  const {_id} = req.authUser
+  // const {_id} = req.authUser
   const { title, description, Keywords ,views, lang } = req.body
     
     // const lang = req.query.lang
@@ -77,8 +77,10 @@ export const getAllBlogs = async(req,res,next) => {
 
 export const getAllBlogsAR = async (req, res, next) => {
 
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
 
-  const blogs = await Blog.find({lang: "ar"})
+  const blogs = await Blog.find({lang: "ar"}).limit(limit).skip(skip)
   
   if (!blogs) return next(new Error("No Blogs Found", { cause: 404 }));
 
@@ -87,7 +89,10 @@ export const getAllBlogsAR = async (req, res, next) => {
 
 export const getAllBlogsEN = async (req, res, next) => {
 
-  const blogs = await Blog.find({lang:"en"});
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
+
+  const blogs = await Blog.find({lang:"en"}).limit(limit).skip(skip);
   
   if (!blogs) return next(new Error("No Blogs Found", { cause: 404 }));
 
