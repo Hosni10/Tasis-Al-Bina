@@ -20,7 +20,8 @@ router.delete("/delete/:id",categoryCont.deleteCategory)
 
 router.get("/getAllCategoryTitleImageAR",categoryCont.getAllCategoryTitleImageAR)
 router.get("/getAllCategoryTitleImageEN",categoryCont.getAllCategoryTitleImageEN)
-
+router.get("/getAllCategoryEN",categoryCont.getAllCategoryEN)
+router.get("/getAllCategoryAR",categoryCont.getAllCategoryAR)
 
 
 export default router

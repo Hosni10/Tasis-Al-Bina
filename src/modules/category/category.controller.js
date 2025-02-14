@@ -190,3 +190,28 @@ export const getAllCategoryTitleImageEN = async(req,res,next) => {
     const num = category.length
     res.status(201).json({message:`category Number : ${num}`,category})
 }
+export const getAllCategoryAR = async(req,res,next) => {
+ 
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
+  
+  const category = await categoryModel.find({lang:"ar"})
+  
+  if(!category) return next(new Error("No category Founded",{cause:404}))
+  
+    const num = category.length
+    res.status(201).json({message:`category Number : ${num}`,category})
+}
+
+export const getAllCategoryEN = async(req,res,next) => {
+ 
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
+  
+  const category = await categoryModel.find({lang:"en"})
+  
+  if(!category) return next(new Error("No category Founded",{cause:404}))
+  
+    const num = category.length
+    res.status(201).json({message:`category Number : ${num}`,category})
+}
