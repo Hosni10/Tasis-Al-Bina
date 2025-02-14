@@ -7,9 +7,10 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 export const createBlog = async(req,res,next) => {
   try {
-  
-  // const {_id} = req.authUser
-  const { title, description, Keywords ,views, lang } = req.body
+    
+    // const {_id} = req.authUser
+    const { title, description, Keywords , lang } = req.body
+    // const views = customAlphabet('123456789',3)
     
     // const lang = req.query.lang
     if (!req.file) {
@@ -37,9 +38,9 @@ export const createBlog = async(req,res,next) => {
           title,
           description,
           lang,  
-          author:_id, 
+          // author:_id, 
           Keywords,
-          views,
+          // views,
           customId,
           Image: {
             secure_url: uploadResult.url,       // image url that frontend can access the image 

@@ -8,6 +8,7 @@ import messageRouter from "./messages/message.routes.js"
 import categoryRouter from "./category/category.routes.js"
 import newsletterRouter from "./Newsletter/newsletter.routes.js"
 import interstedRouter from "./intersted/intersted.routes.js"
+import consultationRouter from "./consultation/consultation.routes.js"
 export {
     authRouter,
     blogsRouter,
@@ -18,7 +19,8 @@ export {
     messageRouter,
     reservationRouter,
     newsletterRouter,
-    interstedRouter
+    interstedRouter,
+    consultationRouter
  }
 
  
