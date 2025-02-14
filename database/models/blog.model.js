@@ -11,7 +11,7 @@ const blogSchema = mongoose.Schema({
       },
     author: {
         type: Schema.Types.ObjectId,
-        required: true,
+        required: false,
         ref: 'User'
     },
     Keywords: [{ type: String, required: true }], 
@@ -34,7 +34,7 @@ const blogSchema = mongoose.Schema({
     views:{
         type:Number,
         default:253,
-        required:true
+        required:false
     },
     customId:String,
     createdAt: {

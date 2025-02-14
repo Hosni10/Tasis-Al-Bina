@@ -7,7 +7,8 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 export const createBlog = async(req,res,next) => {
   try {
-  
+  console.log(req.body);
+  console.log(req.file);
   // const {_id} = req.authUser
   const { title, description, Keywords ,views, lang } = req.body
     
@@ -37,7 +38,7 @@ export const createBlog = async(req,res,next) => {
           title,
           description,
           lang,  
-          author:_id, 
+          // author:_id, 
           Keywords,
           views,
           customId,
@@ -46,9 +47,9 @@ export const createBlog = async(req,res,next) => {
             public_id: uploadResult.fileId,  // image path on imagekit website
           },
         };
-      
+        console.log(blogObject);
         const blog = await Blog.create(blogObject);
-    
+   
         if (!blog) {
            await destroyImage(blog.Image.public_id);
            return next(new Error('Try again later, failed to add', { cause: 400 }));
