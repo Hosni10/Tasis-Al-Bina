@@ -8,8 +8,11 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 const addUnit = async (req, res, next) => {
   
  
+  console.log(req.body);
+  
   const unitData = JSON.parse(req.body.data)
-
+  console.log(unitData);
+  
   try {
      const {
       title,
@@ -29,7 +32,6 @@ const addUnit = async (req, res, next) => {
       waterTank,
       floor,
       maidRoom,
-      driverRoom,
       location,
       coordinates,
       nearbyPlaces,
@@ -61,6 +63,8 @@ const addUnit = async (req, res, next) => {
     const customId = nanoid();
     const uploadedImages = [];
 
+    console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDD");
+    
     for (const file of req.files) {
       const uploadResult = await imagekit.upload({
         file: file.buffer, 
@@ -94,7 +98,6 @@ const addUnit = async (req, res, next) => {
       floor,
       status,
       maidRoom,
-      driverRoom,
       location,
       customId,
       nearbyPlaces,
@@ -103,9 +106,12 @@ const addUnit = async (req, res, next) => {
       // createdBy:_id
     };
 
+    console.log(unitObject);
+
      
     const unit = await Unit.create(unitObject);
-
+    console.log(unit);
+    
     if (!unit) {
       for (const image of uploadedImages) {
         await destroyImage(image.public_id);

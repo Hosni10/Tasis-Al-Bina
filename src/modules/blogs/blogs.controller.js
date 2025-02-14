@@ -40,7 +40,7 @@ export const createBlog = async(req,res,next) => {
           lang,  
           // author:_id, 
           Keywords,
-          views,
+          // views,
           customId,
           Image: {
             secure_url: uploadResult.url,       // image url that frontend can access the image 

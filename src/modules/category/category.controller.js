@@ -6,11 +6,20 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 export const createcategory = async (req, res, next) => {
    try {
-     const { title, area, description, location, latitude, longitude, lang } = req.body;
+
+      const unitData = JSON.parse(req.body.data)
+
+
+      
+     const { title, area, description, location, lang,coordinates } = unitData;
  
-     if (!latitude || !longitude) {
+     console.log(coordinates);
+     
+     if (!coordinates.latitude || !coordinates.longitude) {
        return next(new Error('Coordinates (latitude and longitude) are required.', { cause: 400 }));
      }
+
+
  
      if (!req.file) {
        return next(new Error('Please upload category image', { cause: 400 }));
@@ -23,6 +32,7 @@ export const createcategory = async (req, res, next) => {
      }
  
      const customId = nanoid();
+ console.log("Dddddddddddddddddd");
  
      const uploadResult = await imagekit.upload({
        file: req.file.buffer,
@@ -35,10 +45,7 @@ export const createcategory = async (req, res, next) => {
        area,
        description,
        location,
-       coordinates: {
-         latitude: parseFloat(latitude), // Ensure it's stored as a number
-         longitude: parseFloat(longitude),
-       },
+       coordinates,
        customId,
        Image: {
          secure_url: uploadResult.url, 
