@@ -54,7 +54,7 @@ export const createcategory = async (req, res, next) => {
        return next(new Error("Failed to upload category", { cause: 500 }));
      }
  
-     res.status(201).json({ message: "Category created successfully", data: categoryData });
+     res.status(201).json({ message: "Category created successfully",  categoryData });
  
    } catch (error) {
      next(error);
@@ -184,6 +184,35 @@ export const getAllCategoryTitleImageEN = async(req,res,next) => {
   const {limit, skip} = pagination({page, size}) 
   
   const category = await categoryModel.find({lang:"en"}).select(`title Image`).limit(limit).skip(skip)
+  
+  if(!category) return next(new Error("No category Founded",{cause:404}))
+  
+    const num = category.length
+    res.status(201).json({message:`category Number : ${num}`,category})
+}
+
+
+
+
+export const getAllCategoryAR = async(req,res,next) => {
+ 
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
+  
+  const category = await categoryModel.find({lang:"ar"})
+  
+  if(!category) return next(new Error("No category Founded",{cause:404}))
+  
+    const num = category.length
+    res.status(201).json({message:`category Number : ${num}`,category})
+}
+
+export const getAllCategoryEN = async(req,res,next) => {
+ 
+  const {page, size} = req.query
+  const {limit, skip} = pagination({page, size}) 
+  
+  const category = await categoryModel.find({lang:"en"})
   
   if(!category) return next(new Error("No category Founded",{cause:404}))
   

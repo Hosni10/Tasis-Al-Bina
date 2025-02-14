@@ -14,6 +14,10 @@ const interstedSchema = new Schema({
         type:String,
         required:true
     },
+    isRead: {
+        type: Boolean,
+        default: false
+      },
     categoryId:{
         type: Schema.Types.ObjectId,
         ref: 'category',
