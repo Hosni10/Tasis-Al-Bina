@@ -47,7 +47,7 @@ export const createBlog = async(req,res,next) => {
             public_id: uploadResult.fileId,  // image path on imagekit website
           },
         };
-    
+      
         const blog = await Blog.create(blogObject);
     
         if (!blog) {
