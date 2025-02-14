@@ -28,6 +28,7 @@ export const createNewsletter = async(req,res,next) => {
 
     res.status(201).json({message:"Done, you are subscriped in the newsletter",email})
 }
+
 export const getAllEmails = async (req, res, next) => {
   try {
     const emailData = await newsletterModel.find({ isRead: false })

@@ -1,12 +1,16 @@
 import { Router } from "express"
-import * as interestedController from "./interested.controller.js"
+// Change this line
+import * as interestedCon from "./intersted.controller.js"  // Remove the 'e'
 
 const router = Router()
 
-router.post("/", interestedController.createInterested)
-router.get("/", interestedController.getAllInterested)
-router.get("/:id", interestedController.getOneInterested)
-router.put("/:id", interestedController.updateInterested)
-router.delete("/:id", interestedController.deleteInterested)
+router.post("/create", interestedCon.createInterested)
+router.get("/", interestedCon.getAllInterested)
+router.get("/:id", interestedCon.getOneInterested)
+router.put("/:id", interestedCon.updateInterested)
+router.delete("/:id", interestedCon.deleteInterested)
+
+router.get("/unRead", interestedCon.unRead)
+router.post("/markAsRead", interestedCon.markAsRead)
 
 export default router

@@ -54,7 +54,7 @@ export const createcategory = async (req, res, next) => {
        return next(new Error("Failed to upload category", { cause: 500 }));
      }
  
-     res.status(201).json({ message: "Category created successfully", data: categoryData });
+     res.status(201).json({ message: "Category created successfully",  categoryData });
  
    } catch (error) {
      next(error);
@@ -190,6 +190,10 @@ export const getAllCategoryTitleImageEN = async(req,res,next) => {
     const num = category.length
     res.status(201).json({message:`category Number : ${num}`,category})
 }
+
+
+
+
 export const getAllCategoryAR = async(req,res,next) => {
  
   const {page, size} = req.query
