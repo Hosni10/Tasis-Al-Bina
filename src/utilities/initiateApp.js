@@ -31,6 +31,7 @@ export const initiateApp = (app, express) => {
     app.use('/reservation', routers.reservationRouter);
     app.use('/newsletter', routers.newsletterRouter);
     app.use('/interested', routers.interstedRouter);
+    app.use('/consultation', routers.consultationRouter);
 
     app.use(globalResponse);
 

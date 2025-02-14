@@ -9,8 +9,10 @@ const unitSchema = mongoose.Schema({
         type: String,
         required: true,
         default:"Apartment",
-        enum:["Villa", "Apartment" ,"Duplex", "Penthouse", "Townhouse",
-        "Studio Apartment", "Chalet","Warehouse","Office","Retail Shop"]
+        enum:[
+            "Villa", "Apartment", "Duplex", "Penthouse", "Townhouse",
+            "Studio", "Chalet", "Warehouse", "Office", "Shop"
+          ]
     },
     categoryId:{
         type: Schema.Types.ObjectId,
@@ -76,7 +78,9 @@ const unitSchema = mongoose.Schema({
     status:{
         type:String,
         default:"Available for sale",
-        enum:["Available for sale","available for rent","Reserved","Rented/Leased","Sold","Unavailable"]
+        enum:[
+            "Available", "Sold", "Rented", "Reserved", "Under Maintenance"
+          ]
     },
     cameras:{
         type:Number,
@@ -84,18 +88,18 @@ const unitSchema = mongoose.Schema({
     },
     coordinates: { // ^ for GPS
         latitude: {
-            type: Number,
+            type: String,
             required: true
         },                          
         longitude: {
-            type: Number,
+            type: String,
             required: true
         }
     },
     nearbyPlaces: [
         {
           place: { type: String, required: true },  
-          timeInMinutes: { type: Number, required: true }
+          timeInMinutes: { type: String, required: true }
         }
       ],
     customId:String,
