@@ -85,3 +85,28 @@ export const deleteConsultation = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+export const markAsRead =  async (req, res) => {
+    console.log("yussef and eslan el hop kolooooohhh")
+    try {
+        const consultation = await consultationModel.findByIdAndUpdate({ _id: req.params.id }, { status: 'مكتملة' }, { new: true });
+        if (!consultation) {
+            return res.status(404).json({ message: "Consultation not found" });
+        }
+        console.log(req.params.id);
+        res.status(200).json(consultation);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const markAsCanceled =  async (req, res) => {
+    try {
+        const consultation = await consultationModel.findByIdAndUpdate({ _id: req.params.id }, { status: 'ملغية' }, { new: true });
+        if (!consultation) {
+            return res.status(404).json({ message: "Consultation not found" });
+        }
+        res.status(200).json(consultation);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

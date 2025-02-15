@@ -5,9 +5,9 @@ const router = Router()
 router.post("/create", consultationCon.createConsultation)
 router.get("/", consultationCon.getAllConsultation)
 router.get("/:id", consultationCon.getOneConsultation)
-router.put("/:id", consultationCon.updateConsultation)
 router.delete("/:id", consultationCon.deleteConsultation)
-
+router.patch("/consultation/markAsCompleted/:id", consultationCon.markAsRead);
+router.patch("/consultation/markAsCanceled/:id", consultationCon.markAsCanceled);
 export default router
 
 
