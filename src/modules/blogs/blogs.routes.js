@@ -20,6 +20,7 @@ router.get("/getLastThree",BlogCon.getLastThreeBlogs)
 router.get("/ar",BlogCon.getAllBlogsAR)
 router.get("/en",BlogCon.getAllBlogsEN)
 
+router.get("/getLastThreeBlogsforDashboard",BlogCon.getLastThreeBlogsforDashboard)
 
 
 export default router

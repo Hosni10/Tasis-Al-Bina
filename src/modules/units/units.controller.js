@@ -143,6 +143,7 @@ const getUnit = async (req, res) => {
   
   res.status(200).json({ message: "Success", returnedData });
 };
+
 const updateUnit = async (req, res, next) => {
   try {
     const unitData = JSON.parse(req.body.data)
