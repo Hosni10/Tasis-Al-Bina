@@ -117,12 +117,17 @@ export const markAsCanceled =  async (req, res) => {
 export const getLastThreeConsultes = async (req, res, next) => {
     try {
       const consultes = await consultationModel.find().sort({ createdAt: -1 }).limit(4);
-  
+        const count = await consultationModel.countDocuments();
       if (!consultes || consultes.length === 0) {
         return next(new Error("No consultes Found", { cause: 404 }));
       }
+
+      returnedData = {
+        count,
+        consultes,
+      }
   
-      res.status(200).json({ message: "Last 3 consultes", consultes });
+      res.status(200).json({ message: "Last 3 consultes and thair count", returnedData });
     } catch (error) {
       next(error);
     }

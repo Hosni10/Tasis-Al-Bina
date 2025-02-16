@@ -7,10 +7,10 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 export const createBlog = async(req,res,next) => {
   try {
-    
-    // const {_id} = req.authUser
-    const { title, description, Keywords , lang } = req.body
-    // const views = customAlphabet('123456789',3)
+  console.log(req.body);
+  console.log(req.file);
+  // const {_id} = req.authUser
+  const { title, description, Keywords ,views, lang } = req.body
     
     // const lang = req.query.lang
     if (!req.file) {
@@ -47,9 +47,9 @@ export const createBlog = async(req,res,next) => {
             public_id: uploadResult.fileId,  // image path on imagekit website
           },
         };
-      
+        console.log(blogObject);
         const blog = await Blog.create(blogObject);
-    
+   
         if (!blog) {
            await destroyImage(blog.Image.public_id);
            return next(new Error('Try again later, failed to add', { cause: 400 }));
@@ -182,12 +182,17 @@ export const deleteBlog = async (req, res, next) => {
 export const getLastThreeBlogs = async (req, res, next) => {
   try {
     const blogs = await Blog.find().sort({ createdAt: -1 }).limit(3);
-
+    const count = await Blog.countDocuments();
     if (!blogs || blogs.length === 0) {
       return next(new Error("No Blogs Found", { cause: 404 }));
     }
 
-    res.status(200).json({ message: "Last 3 Blogs", blogs });
+    const returnData = {
+      count,
+      blogs,
+    }
+
+    res.status(200).json({ message: "Last 3 Blogs and thair count", returnData });
   } catch (error) {
     next(error);
   }

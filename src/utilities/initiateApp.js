@@ -12,7 +12,7 @@ export const initiateApp = (app, express) => {
     // Configure CORS to allow requests from your frontend origin
     app.use(cors({
         // origin: ['http://localhost:3000','http://localhost:3001','http://localhost:3002','http://localhost:3003'], // Allow requests from this origin
-        // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], // Allowed HTTP methods
         allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
         credentials: true, // Allow cookies and credentials
     }));

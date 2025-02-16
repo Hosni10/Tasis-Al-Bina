@@ -5,7 +5,6 @@ const router = Router()
 router.post("/create", consultationCon.createConsultation)
 router.get("/", consultationCon.getAllConsultation)
 router.get("/:id", consultationCon.getOneConsultation)
-router.put("/:id", consultationCon.updateConsultation)
 router.delete("/:id", consultationCon.deleteConsultation)
 
 router.patch("/markAsCompleted/:id", consultationCon.markAsRead)

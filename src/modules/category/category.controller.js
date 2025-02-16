@@ -6,21 +6,23 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 export const createcategory = async (req, res, next) => {
    try {
-
-      const unitData = JSON.parse(req.body.data)
-
-
+console.log(req.body);
+      // const unitData = JSON.parse(req.body)
       
-     const { title, area, description, location, lang,coordinates } = unitData;
- 
-     console.log(coordinates);
+      const { title, description, location, lang } = req.body;
+      const latitude = parseFloat(req.body.latitude);
+      const longitude = parseFloat(req.body.longitude);
+      const area = parseFloat(req.body.area);
+      if (isNaN(latitude) || isNaN(longitude)) {
+        return next(new Error('Invalid coordinates format', { cause: 400 }));
+      }
+      
+     console.log(latitude,longitude);
      
-     if (!coordinates.latitude || !coordinates.longitude) {
+     if (!latitude || !longitude) {
        return next(new Error('Coordinates (latitude and longitude) are required.', { cause: 400 }));
      }
 
-
- 
      if (!req.file) {
        return next(new Error('Please upload category image', { cause: 400 }));
      }
@@ -45,7 +47,10 @@ export const createcategory = async (req, res, next) => {
        area,
        description,
        location,
-       coordinates,
+       coordinates:{
+         latitude,
+         longitude
+       },
        customId,
        Image: {
          secure_url: uploadResult.url, 
@@ -53,6 +58,7 @@ export const createcategory = async (req, res, next) => {
        },
        lang,
      };
+ console.log(categoryObject.coordinates);
  
      const categoryData = await categoryModel.create(categoryObject);
  
@@ -231,12 +237,16 @@ export const getAllCategoryEN = async(req,res,next) => {
 export const getLastThreeCategory = async (req, res, next) => {
   try {
     const categories = await categoryModel.find().sort({ createdAt: -1 }).limit(4);
-
+    const count = await categoryModel.countDocuments();
     if (!categories || categories.length === 0) {
       return next(new Error("No categories Found", { cause: 404 }));
     }
 
-    res.status(200).json({ message: "Last 3 categories", categories });
+    const returnedData = {
+      count,
+      categories,
+    }
+    res.status(200).json({ message: "Last 3 categories and counts", returnedData });
   } catch (error) {
     next(error);
   }
