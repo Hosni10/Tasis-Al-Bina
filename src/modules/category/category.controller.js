@@ -196,7 +196,7 @@ export const getAllCategoryTitleImageEN = async(req,res,next) => {
   const {page, size} = req.query
   const {limit, skip} = pagination({page, size}) 
   
-  const category = await categoryModel.find({lang:"en"}).select(`title Image`).limit(limit).skip(skip)
+  const category = await categoryModel.find({lang:"en"})
   
   if(!category) return next(new Error("No category Founded",{cause:404}))
   
@@ -225,7 +225,7 @@ export const getAllCategoryEN = async(req,res,next) => {
   const {page, size} = req.query
   const {limit, skip} = pagination({page, size}) 
   
-  const category = await categoryModel.find({lang:"en"})
+  const category = await categoryModel.find({lang:"en"}).limit(limit).skip(skip)
   
   if(!category) return next(new Error("No category Founded",{cause:404}))
   

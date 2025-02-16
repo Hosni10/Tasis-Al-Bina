@@ -130,10 +130,19 @@ const getUnit = async (req, res) => {
   const unit = await Unit.findById(req.params.id);
 
   if (!unit) return next(new Error("unit not found",{cause:404}))
-  
-  res.status(200).json({ message: "Success", unit });
-};
 
+    const latitude = unit.coordinates.latitude
+    const longitude = unit.coordinates.longitude 
+
+
+    const returnedData =
+    {
+      unit,
+      googleMapsLink: `https://www.google.com/maps/place/${latitude},${longitude}`
+    }
+  
+  res.status(200).json({ message: "Success", returnedData });
+};
 const updateUnit = async (req, res, next) => {
   try {
     const unitData = JSON.parse(req.body.data)

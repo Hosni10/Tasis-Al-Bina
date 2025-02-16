@@ -178,21 +178,15 @@ export const deleteBlog = async (req, res, next) => {
 
 
 
-
 export const getLastThreeBlogs = async (req, res, next) => {
   try {
     const blogs = await Blog.find().sort({ createdAt: -1 }).limit(3);
-    const count = await Blog.countDocuments();
+
     if (!blogs || blogs.length === 0) {
       return next(new Error("No Blogs Found", { cause: 404 }));
     }
 
-    const returnData = {
-      count,
-      blogs,
-    }
-
-    res.status(200).json({ message: "Last 3 Blogs and thair count", returnData });
+    res.status(200).json({ message: "Last 3 Blogs", blogs });
   } catch (error) {
     next(error);
   }
