@@ -6,8 +6,8 @@ router.post("/create", consultationCon.createConsultation)
 router.get("/", consultationCon.getAllConsultation)
 router.get("/:id", consultationCon.getOneConsultation)
 router.delete("/:id", consultationCon.deleteConsultation)
-router.patch("/consultation/markAsCompleted/:id", consultationCon.markAsRead);
-router.patch("/consultation/markAsCanceled/:id", consultationCon.markAsCanceled);
+router.patch("/markAsCompleted/:id", consultationCon.markAsRead);
+router.patch("/markAsCanceled/:id", consultationCon.markAsCanceled);
 export default router
 
 
