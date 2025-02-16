@@ -173,7 +173,13 @@ export const getAllUnReadInterested = async (req, res, next) => {
 
 export const getLastThreeIntersted = async (req, res, next) => {
     try {
-      const intested = await interstedModel.find().sort({ createdAt: -1 }).limit(4);
+      const intested = await interstedModel.find()
+      .select(`fullName phone email categoryId unitId`)
+      .populate('categoryId', 'title')
+      .populate('unitId', 'title')
+      .sort({ createdAt: -1 })
+      .limit(4)
+
       const count = await interstedModel.countDocuments();
       if (!intested || intested.length === 0) {
         return next(new Error("No intested Found", { cause: 404 }));
@@ -184,7 +190,7 @@ export const getLastThreeIntersted = async (req, res, next) => {
         intested,
         count,  
       }
-      res.status(200).json({ message: "Last 3 intested and thair count", returnedData });
+      res.status(200).json({ message: "Last 4 intested and thair count", returnedData });
     } catch (error) {
       next(error);
     }

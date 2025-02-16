@@ -210,7 +210,7 @@ export const getAllCategoryTitleImageEN = async(req,res,next) => {
 export const getAllCategoryAR = async(req,res,next) => {
  
   const {page, size} = req.query
-  const {limit, skip} = pagination({page, size}) 
+  const {limit, skip} = pagination({page, size})
   
   const category = await categoryModel.find({lang:"ar"})
   
@@ -236,7 +236,7 @@ export const getAllCategoryEN = async(req,res,next) => {
 
 export const getLastThreeCategory = async (req, res, next) => {
   try {
-    const categories = await categoryModel.find().sort({ createdAt: -1 }).limit(4);
+    const categories = await categoryModel.find().select(`Image title description location`).sort({ createdAt: -1 }).limit(4);
     const count = await categoryModel.countDocuments();
     if (!categories || categories.length === 0) {
       return next(new Error("No categories Found", { cause: 404 }));
