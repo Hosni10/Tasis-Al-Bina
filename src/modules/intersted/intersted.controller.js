@@ -38,9 +38,9 @@ export const getAllInterested = async (req, res, next) => {
             if (!interested) {
                 return next(new Error("Interest records not found", { cause: 404 }))
             }
-            if (interested.length > 0) {
-                      io.emit("intersted-featch", interested)
-                }
+            // if (interested.length > 0) {
+            //           io.emit("intersted-featch", interested)
+            //     }
             
         res.status(200).json({ message: "Success", interested })
     } catch (error) {

@@ -12,6 +12,13 @@ router.patch("/markAsCanceled/:id", consultationCon.markAsCanceled)
 
 router.get("/getLastThreeConsultes", consultationCon.getLastThreeConsultes)
 
+
+router.post("/isRead", consultationCon.isRead)
+
+router.get("/getAllLastOneHour", consultationCon.getAllLastOneHour)
+
+router.get("/getAllUnReadConsultents", consultationCon.getAllUnReadConsultents)
+
 export default router
 
 
