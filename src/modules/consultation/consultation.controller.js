@@ -1,4 +1,5 @@
 import { consultationModel } from "../../../database/models/consultation.model.js";
+import { io } from "../../utilities/initiateApp.js";
 
 export const createConsultation = async (req, res) => {
     try {
@@ -16,7 +17,14 @@ export const createConsultation = async (req, res) => {
             status: status
         }
 
-        console.log("Attempting to create consultation with:", consObject);
+                  io.emit('new_consultation', {            
+                    type, 
+                    selectedDay,
+                    phone,
+                    email,
+                    status });
+
+        // console.log("Attempting to create consultation with:", consObject);
 
         const newConsultation = new consultationModel(consObject)
         const savedConsultation = await newConsultation.save()
@@ -42,11 +50,21 @@ export const createConsultation = async (req, res) => {
 export const getAllConsultation = async (req, res) => {
     try {
         const consultations = await consultationModel.find();
+        
+        if (!consultations) {
+            return next(new Error("Interest records not found", { cause: 404 }))
+        }
+        if (consultations.length > 0) {
+                  io.emit("consultation-featch", consultations)
+            }
         res.status(200).json(consultations);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
+
+
 
 // Get a single consultation by ID
 export const getOneConsultation =  async (req, res) => {
@@ -134,3 +152,61 @@ export const getLastThreeConsultes = async (req, res, next) => {
       next(error);
     }
   };
+
+
+  export const isRead = async (req, res, next) => {
+    try {
+      await consultationModel.updateMany(
+        { isRead: false },
+        { $set: { isRead: true}}
+      )
+      io.emit("consultation_read")
+  
+      res.json({ message: 'Marked as read' })
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to mark as read' })
+    }
+  }
+
+  export const getAllLastOneHour = async (req, res, next) => {
+    try {
+      const oneHourAgo = new Date();
+      oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+  
+      const consultationData = await consultationModel.find({ createdAt: { $gte: oneHourAgo } });
+  
+      // console.log(consultationData.length);
+      
+      if (consultationData.length === 0) return next(new Error('No consultations found in the last hour', { cause: 404 }));
+  
+      if (consultationData.length > 0) {
+        io.emit("last-one-hour-consoltation", consultationData)
+      }
+      // console.log(consultationData);
+      
+  
+      res.status(200).json({ message: "Emails from the last hour", consultationData });
+    } catch (error) {
+      console.error("Error fetching subscribers:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+
+  export const getAllUnReadConsultents = async (req, res, next) => {
+      try {
+          const consultations = await consultationModel.find({ isRead: false })
+  
+              if (!consultations) {
+                  return next(new Error("Interest records not found", { cause: 404 }))
+              }
+              if (consultations.length > 0) {
+                        io.emit("consultation-featch", consultations)
+                  }
+              console.log(consultations);
+              
+          res.status(200).json({ message: "Success", consultations })
+      } catch (error) {
+          next(error) 
+      }
+  }

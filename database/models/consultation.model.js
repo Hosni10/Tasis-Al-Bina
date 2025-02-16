@@ -22,7 +22,11 @@ const consultationSchema = new Schema({
         type:String,
         default:"قيد الانتظار",
         enum:["قيد الانتظار","مكتملة","ملغية"]
-    }
-},{timeseries:true})
+    },
+    isRead: {
+        type: Boolean,
+        default: false
+      },
+},{timestamps:true})
 
 export const consultationModel = model("consultation",consultationSchema)

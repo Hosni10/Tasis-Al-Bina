@@ -96,6 +96,9 @@ export const getAllLastHour = async (req, res, next) => {
 
     if(emailData.length === 0) return next(new Error('No emails found',{cause:404}))
 
+    if (emailData.length > 0) {
+      io.emit("last-one-hour-newsletter", emailData)
+    }
       res.status(200).json({ message: "All emails", emailData })  
   } catch (error) {
     console.error("Error fetching subscribers:", error)
