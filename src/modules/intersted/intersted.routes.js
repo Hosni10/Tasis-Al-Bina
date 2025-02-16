@@ -6,11 +6,18 @@ const router = Router()
 
 router.post("/create", interestedCon.createInterested)
 router.get("/", interestedCon.getAllInterested)
-router.get("/:id", interestedCon.getOneInterested)
 router.put("/:id", interestedCon.updateInterested)
 router.delete("/:id", interestedCon.deleteInterested)
 
-router.get("/unRead", interestedCon.unRead)
+router.get("/unread", interestedCon.unRead)
 router.post("/markAsRead", interestedCon.markAsRead)
+
+router.get("/getAllLastOneHour", interestedCon.getAllLastOneHour)
+router.get("/findAllNotReaded", interestedCon.getAllUnReadInterested)
+
+
+
+router.get("/getLastThreeIntersted", interestedCon.getLastThreeIntersted)
+
 
 export default router

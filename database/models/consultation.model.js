@@ -18,7 +18,11 @@ const consultationSchema = new Schema({
         type:String,
         required:true
     },
+    status:{
+        type:String,
+        default:"قيد الانتظار",
+        enum:["قيد الانتظار","مكتملة","ملغية"]
+    }
 },{timeseries:true})
-
 
 export const consultationModel = model("consultation",consultationSchema)

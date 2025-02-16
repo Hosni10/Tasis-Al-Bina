@@ -527,3 +527,14 @@ export const updateUser = async(req,res,next) => {
         next(new Error(`fail to upload${error.message}`, { cause: 500 }));
       }
     }
+
+
+    export const usersCount = async(req,res,next) => {
+      try {
+        const count = await userModel.countDocuments();
+        if(!count) return next(new Error("didn't found the question .",{cause:404}))
+        res.status(200).json({ count });
+      } catch (error) {
+        next(new Error(`fail to upload${error.message}`, { cause: 500 }));
+      }
+    }

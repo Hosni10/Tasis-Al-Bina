@@ -31,6 +31,7 @@ router.get('/users',AuthCon.getAllUser)
    router.put('/update/:id',isAuth(addUsersEndpoints.UPDATE_USER),AuthCon.updateUserFromSuperAdmin)
 
 
+   router.get('/usersCount',AuthCon.usersCount) 
 
 export default router
 
