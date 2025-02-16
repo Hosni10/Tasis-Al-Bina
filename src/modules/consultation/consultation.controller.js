@@ -2,7 +2,7 @@ import { consultationModel } from "../../../database/models/consultation.model.j
 
 export const createConsultation = async (req, res) => {
     try {
-        const { type, selectedDay, phone, email } = req.body
+        const { type, selectedDay, phone, email,status } = req.body
         
         if (!type || !selectedDay || !phone || !email) {
             return res.status(400).json({ error: "All fields are required" })
@@ -12,7 +12,8 @@ export const createConsultation = async (req, res) => {
             type: type,
             selectedDay: selectedDay,
             phone: phone,
-            email: email
+            email: email,
+            status: status
         }
 
         console.log("Attempting to create consultation with:", consObject);
@@ -85,3 +86,44 @@ export const deleteConsultation = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
+export const markAsRead =  async (req, res) => {
+    try {
+        const consultation = await consultationModel.findByIdAndUpdate({ _id: req.params.id }, { status: 'مكتملة' }, { new: true });
+        if (!consultation) {
+            return res.status(404).json({ message: "Consultation not found" });
+        }
+        res.status(200).json(consultation);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+export const markAsCanceled =  async (req, res) => {
+    try {
+        const consultation = await consultationModel.findByIdAndUpdate({ _id: req.params.id }, { status: 'ملغية' }, { new: true });
+        if (!consultation) {
+            return res.status(404).json({ message: "Consultation not found" });
+        }
+        res.status(200).json(consultation);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+export const getLastThreeConsultes = async (req, res, next) => {
+    try {
+      const consultes = await consultationModel.find().sort({ createdAt: -1 }).limit(4);
+  
+      if (!consultes || consultes.length === 0) {
+        return next(new Error("No consultes Found", { cause: 404 }));
+      }
+  
+      res.status(200).json({ message: "Last 3 consultes", consultes });
+    } catch (error) {
+      next(error);
+    }
+  };

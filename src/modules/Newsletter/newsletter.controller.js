@@ -84,3 +84,21 @@ export const getAll = async (req, res, next) => {
     res.status(500).json({ message: "Internal server error" })
   }
 }
+
+
+export const getAllLastHour = async (req, res, next) => {
+  try {
+    const oneHourAgo = new Date();
+    oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+
+    const emailData = await newsletterModel.find({ createdAt: { $gte: oneHourAgo } })
+
+
+    if(emailData.length === 0) return next(new Error('No emails found',{cause:404}))
+
+      res.status(200).json({ message: "All emails", emailData })  
+  } catch (error) {
+    console.error("Error fetching subscribers:", error)
+    res.status(500).json({ message: "Internal server error" })
+  }
+}

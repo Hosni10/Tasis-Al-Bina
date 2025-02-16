@@ -226,3 +226,18 @@ export const getAllCategoryEN = async(req,res,next) => {
     const num = category.length
     res.status(201).json({message:`category Number : ${num}`,category})
 }
+
+
+export const getLastThreeCategory = async (req, res, next) => {
+  try {
+    const categories = await categoryModel.find().sort({ createdAt: -1 }).limit(4);
+
+    if (!categories || categories.length === 0) {
+      return next(new Error("No categories Found", { cause: 404 }));
+    }
+
+    res.status(200).json({ message: "Last 3 categories", categories });
+  } catch (error) {
+    next(error);
+  }
+};

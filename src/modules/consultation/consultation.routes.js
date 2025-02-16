@@ -8,6 +8,11 @@ router.get("/:id", consultationCon.getOneConsultation)
 router.put("/:id", consultationCon.updateConsultation)
 router.delete("/:id", consultationCon.deleteConsultation)
 
+router.patch("/markAsCompleted/:id", consultationCon.markAsRead)
+router.patch("/markAsCanceled/:id", consultationCon.markAsCanceled)
+
+router.get("/getLastThreeConsultes", consultationCon.getLastThreeConsultes)
+
 export default router
 
 

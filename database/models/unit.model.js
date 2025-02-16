@@ -88,18 +88,18 @@ const unitSchema = mongoose.Schema({
     },
     coordinates: { // ^ for GPS
         latitude: {
-            type: String,
+            type: Number,
             required: true
         },                          
         longitude: {
-            type: String,
+            type: Number,
             required: true
         }
     },
     nearbyPlaces: [
         {
           place: { type: String, required: true },  
-          timeInMinutes: { type: String, required: true }
+          timeInMinutes: { type: Number, required: true }
         }
       ],
     customId:String,

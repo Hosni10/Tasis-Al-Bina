@@ -9,6 +9,7 @@ router.post('/markAsRead',newsletterCont.markAsRead)
 
 
 router.get('/all',newsletterCont.getAll)
+router.get('/getAllLastHour',newsletterCont.getAllLastHour)
 
 
 

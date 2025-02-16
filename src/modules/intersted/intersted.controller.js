@@ -71,6 +71,32 @@ export const markAsRead = async (req, res, next) => {
   }
 }
 
+export const getAllLastOneHour = async (req, res, next) => {
+  try {
+    const oneHourAgo = new Date();
+    oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+
+    const interstedData = await interstedModel.find({ createdAt: { $gte: oneHourAgo } })
+    .populate('categoryId')
+    .populate('unitId')
+;
+
+    // console.log(interstedData.length);
+    
+    if (interstedData.length === 0) return next(new Error('No emails found in the last hour', { cause: 404 }));
+
+    if (interstedData.length > 0) {
+      io.emit("last-one-hour-intersted", interstedData)
+    }
+    // console.log(interstedData);
+    
+
+    res.status(200).json({ message: "Emails from the last hour", interstedData });
+  } catch (error) {
+    console.error("Error fetching subscribers:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 // Get single interested entry
 export const getOneInterested = async (req, res, next) => {
     try {
@@ -124,3 +150,37 @@ export const deleteInterested = async (req, res, next) => {
         next(error)
     }
 }
+
+export const getAllUnReadInterested = async (req, res, next) => {
+    try {
+        const interested = await interstedModel.find({ isRead: false })
+            .populate('categoryId')
+            .populate('unitId')
+
+            if (!interested) {
+                return next(new Error("Interest records not found", { cause: 404 }))
+            }
+            if (interested.length > 0) {
+                      io.emit("intersted-featch", interested)
+                }
+            
+        res.status(200).json({ message: "Success", interested })
+    } catch (error) {
+        next(error) 
+    }
+}
+
+
+export const getLastThreeIntersted = async (req, res, next) => {
+    try {
+      const intested = await interstedModel.find().sort({ createdAt: -1 }).limit(4);
+  
+      if (!intested || intested.length === 0) {
+        return next(new Error("No intested Found", { cause: 404 }));
+      }
+  
+      res.status(200).json({ message: "Last 3 intested", intested });
+    } catch (error) {
+      next(error);
+    }
+  };
