@@ -5,14 +5,16 @@ const unitSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    type:{
+    type: {
         type: String,
         required: true,
-        default:"Apartment",
-        enum:[
-            "Villa", "Apartment", "Duplex", "Penthouse", "Townhouse",
-            "Studio", "Chalet", "Warehouse", "Office", "Shop"
-          ]
+        default: "شقة",
+        enum: [
+            "فيلا", "شقة", "دوبلكس", "مكتب", "محل تجاري", "مستودع",
+            "استوديو", "شاليه", "مستودع", "مكتب","Villa", "Apartment",
+            "Duplex", "Office", "Retail Shop", "Warehouse",
+            "Studio", "Chalet"
+        ]
     },
     categoryId:{
         type: Schema.Types.ObjectId,
@@ -75,12 +77,13 @@ const unitSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    status:{
-        type:String,
-        default:"Available for sale",
-        enum:[
-            "Available", "Sold", "Rented", "Reserved", "Under Maintenance"
-          ]
+    status: {
+        type: String,
+        default: "متاح للبيع",
+        enum: [
+            "متاح للبيع", "متاح للإيجار", "محجوز", "مؤجر", "مباع", "غير متاح",
+            "Available for sale", "Available for rent", "Reserved", "Rented", "Sold", "Unavailable"
+        ]
     },
     cameras:{
         type:Number,
