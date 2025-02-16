@@ -2,6 +2,7 @@ import { Blog } from "../../../database/models/blog.model.js"
 import { customAlphabet } from 'nanoid'
 import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js"
 import { pagination } from "../../utilities/pagination.js"
+import { count } from "console"
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 
@@ -181,25 +182,40 @@ export const deleteBlog = async (req, res, next) => {
 
 export const getLastThreeBlogs = async (req, res, next) => {
   try {
-    const blogs = await Blog.find().select(`Image title createdAt`).sort({ createdAt: -1 }).limit(3);
-    const count = await Blog.countDocuments();
+    const blogs = await Blog.find().sort({ createdAt: -1 }).limit(3);
+
     if (!blogs || blogs.length === 0) {
       return next(new Error("No Blogs Found", { cause: 404 }));
     }
 
-    const returnData = {
-      count,
-      blogs,
-    }
-
-    res.status(200).json({ message: "Last 3 Blogs and thair count", returnData });
+    res.status(200).json({ message: "Last 3 Blogs", blogs });
   } catch (error) {
     next(error);
   }
 };
 
 
+export const getLastThreeBlogsforDashboard = async (req, res, next) => {
+  try {
 
+    
+    const blogs = await Blog.find().select('title createdAt Image').sort({ createdAt: -1 }).limit(4);
+    
+    const count = await Blog.countDocuments();
+    if (!blogs || blogs.length === 0) {
+      return next(new Error("No Blogs Found", { cause: 404 }));
+    }
+
+    const returnedData = {
+      blogs,
+      count
+    }
+    
+    res.status(200).json({ message: "Last 4 Blogs", returnedData });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 

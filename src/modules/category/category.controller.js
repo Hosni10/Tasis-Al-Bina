@@ -246,7 +246,7 @@ export const getLastThreeCategory = async (req, res, next) => {
       count,
       categories,
     }
-    res.status(200).json({ message: "Last 3 categories and counts", returnedData });
+    res.status(200).json({ message: "Last 4 categories and counts", returnedData });
   } catch (error) {
     next(error);
   }
