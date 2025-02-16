@@ -179,7 +179,6 @@ export const deleteBlog = async (req, res, next) => {
 
 
 
-
 export const getLastThreeBlogs = async (req, res, next) => {
   try {
     const blogs = await Blog.find().sort({ createdAt: -1 }).limit(3);
