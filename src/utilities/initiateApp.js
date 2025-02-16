@@ -35,9 +35,10 @@ export const initiateApp = (app, express) => {
 
     app.use(globalResponse);
 
+    app.get('/', (req, res) => res.send('Backend is running ✔️')); 
+
     app.use('*', (req, res, next) => res.status(404).json({ message: '404 not found URL' }));
 
-    app.get('/', (req, res) => res.send('Hello World!'));
 
     const serverApp = app.listen(port, () =>
         console.log(`Application on port ${port}`.random)
