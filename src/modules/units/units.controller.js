@@ -106,11 +106,11 @@ const addUnit = async (req, res, next) => {
       // createdBy:_id
     };
 
-    console.log(unitObject);
+    // console.log(unitObject);
 
      
     const unit = await Unit.create(unitObject);
-    console.log(unit);
+    // console.log(unit);
     
     if (!unit) {
       for (const image of uploadedImages) {
@@ -206,9 +206,8 @@ const updateUnit = async (req, res, next) => {
 
 const deleteUnit = async (req, res, next) => {
   try {
-    const {_id} = req.authUser
-    const { unitId } = req.params
-    const unit = await Unit.findOne({id:unitId,createdBy:_id});
+    const { unitId } = req.params.id;
+    const unit = await Unit.findById(unitId);
     if (!unit) {
       return res.status(404).json({  message: "Unit not found , you are not the owner of this unit" });
     }
