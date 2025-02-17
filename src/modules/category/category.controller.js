@@ -6,7 +6,7 @@ const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 export const createcategory = async (req, res, next) => {
    try {
-console.log(req.body);
+// console.log(req.body);
       // const unitData = JSON.parse(req.body)
       
       const { title, description, location, lang } = req.body;

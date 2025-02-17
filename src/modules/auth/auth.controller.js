@@ -407,8 +407,8 @@ export const logout = async (req, res, next) => {
    
 
 export const updateUser = async(req,res,next) => {
-      console.log("ddd");
-      console.log(req.body);
+      // console.log("ddd");
+      // console.log(req.body);
       
       
       const authHeader = req.headers['authorization'];
@@ -501,7 +501,7 @@ export const updateUser = async(req,res,next) => {
      
      
       const id = req.params.id;
-          console.log(id);
+          // console.log(id);
           
       try {
          const {firstName,
