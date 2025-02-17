@@ -206,7 +206,8 @@ const updateUnit = async (req, res, next) => {
 
 const deleteUnit = async (req, res, next) => {
   try {
-    const { unitId } = req.params.id;
+    const unitId  = req.params.id;
+    
     const unit = await Unit.findById(unitId);
     if (!unit) {
       return res.status(404).json({  message: "Unit not found , you are not the owner of this unit" });
@@ -222,9 +223,9 @@ const deleteUnit = async (req, res, next) => {
       }
     }
 
-    const deletedUnit = await Unit.findByIdAndDelete(req.params.id);
+       await Unit.findByIdAndDelete(req.params.id);
 
-    res.status(200).json({ message: "Unit deleted successfully", deletedUnit });
+    res.status(200).json({ message: "Unit deleted successfully"});
   } catch (error) {
     next(new Error(`Failed to delete unit: ${error.message}`, { cause: 500 }));
   }
