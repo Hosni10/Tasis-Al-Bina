@@ -207,7 +207,6 @@ const updateUnit = async (req, res, next) => {
 const deleteUnit = async (req, res, next) => {
   try {
     const unitId  = req.params.id;
-    console.log(unitId);
     
     const unit = await Unit.findById(unitId);
     if (!unit) {
