@@ -32,9 +32,11 @@ export const isAuth = (roles) => {
         // Find user
         const findUser = await userModel.findById(decodedData._id, 'email userName role');
         if (!findUser) {
-          return next(new Error('Please SignUp', { cause: 400 }));
+          return res.status(401).json({ message: 'Invalid token' });
         }
 
+        console.log("findUser",findUser);
+        
         console.log("User Data:",findUser.role);
         console.log("Roles Allowed:",roles);
         

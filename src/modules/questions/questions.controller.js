@@ -50,7 +50,7 @@ export const UpdateQuestion = async (req,res,next) => {
             answer,
             } = req.body
 
-        console.log(req.body);
+        // console.log(req.body);
         
           const isQuestionExisting = await questionsModel.findById(id)
          if(!isQuestionExisting) return next(new Error("didn't found the question .",{cause:404}))
