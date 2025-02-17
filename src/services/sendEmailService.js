@@ -45,8 +45,8 @@ export const sendVerificationEmail = async (toEmail, verificationCode) => {
     port: process.env.SMTP_PORT,
     secure: false, // Use TLS
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user:"yussef.ali.it@gmail.com",
+      pass:"sxuo ejwl xeha fpvj"
     },
   });
 
