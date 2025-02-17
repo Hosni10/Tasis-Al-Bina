@@ -13,7 +13,7 @@ router.get("/",categoryCont.getAllCategory)
 // & get all category (title,Image) only
 router.get("/getAllCategoryTitleImage",categoryCont.getAllCategoryTitleImage)
 
-router.put("/update/:id",categoryCont.updateCategory)
+router.put("/update/:id",multerCloudFunction(allowedExtensions.Image).single('image'),categoryCont.updateCategory)
 router.get("/getOne/:id",categoryCont.getOneCategory)
 
 router.delete("/delete/:id",categoryCont.deleteCategory)
