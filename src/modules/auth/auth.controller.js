@@ -51,9 +51,9 @@ export const signUp = async(req,res,next) => {
 
 export const addUser = async (req, res, next) => {
     try {
-      console.log('Request body:', JSON.stringify(req.body, null, 2));
+      // console.log('Request body:', JSON.stringify(req.body, null, 2));
 
-      console.log(req.body);
+      // console.log(req.body);
       
       const {
         firstName,
@@ -70,7 +70,7 @@ export const addUser = async (req, res, next) => {
       if (EmailExisted) return next(new Error('This email is already exist'));
   
    const storedCode = verificationCodesNew.get(email);
-   console.log(storedCode)
+  //  console.log(storedCode)
    
    if (!storedCode) {
      console.error('No verification code found for email:', email);
@@ -97,7 +97,7 @@ export const addUser = async (req, res, next) => {
       });
   
       const saveUser = await user.save();
-      console.log('User added successfully:', saveUser);
+      // console.log('User added successfully:', saveUser);
       res.status(201).json({ message: 'User added successfully', saveUser });
     } catch (error) {
       console.error('Error adding user:', error);
@@ -242,7 +242,7 @@ export const resetPassword = async(req,res,next) => {
     }
 
     const storedCode = verificationCodesAdd.get(email);
-    console.log(storedCode)
+    // console.log(storedCode)
     
     if (!storedCode) {
       console.error('No verification code found for email:', email);
@@ -294,7 +294,7 @@ export const logout = async (req, res, next) => {
 
     const email = decoded.email;
 
-    console.log("Decoded email:", email);
+    // console.log("Decoded email:", email);
 
     // البحث عن المستخدم
     const user = await userModel.findOne({ email });
@@ -407,8 +407,8 @@ export const logout = async (req, res, next) => {
    
 
 export const updateUser = async(req,res,next) => {
-      // console.log("ddd");
-      // console.log(req.body);
+      console.log("ddd");
+      console.log(req.body);
       
       
       const authHeader = req.headers['authorization'];
@@ -508,7 +508,10 @@ export const updateUser = async(req,res,next) => {
           middleName,
           lastName,
           phoneNumber,
+          role
           } = req.body
+
+          
       
         const user = await userModel.findById(id)
       
@@ -520,6 +523,7 @@ export const updateUser = async(req,res,next) => {
         if(middleName) user.middleName = middleName
         if(lastName) user.lastName = lastName
         if(phoneNumber) user.phoneNumber = phoneNumber
+        if(role) user.role = role
       
         await user.save()
         res.status(200).json({message : "user updated successfully",user})
