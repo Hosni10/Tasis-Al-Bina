@@ -78,27 +78,39 @@ export const getAllBlogs = async(req,res,next) => {
 
 
 export const getAllBlogsAR = async (req, res, next) => {
+  const { page, size } = req.query
+  const { limit, skip } = pagination({ page, size })
 
-  const {page, size} = req.query
-  const {limit, skip} = pagination({page, size}) 
-
-  const blogs = await Blog.find({lang: "ar"}).limit(limit).skip(skip)
+  // Get total count of AR blogs
+  const totalCount = await Blog.countDocuments({ lang: "ar" })
   
-  if (!blogs) return next(new Error("No Blogs Found", { cause: 404 }));
+  const blogs = await Blog.find({ lang: "ar" }).limit(limit).skip(skip)
 
-  res.status(200).json({ message: `Done`, blogs });
+  if (!blogs) return next(new Error("No Blogs Found", { cause: 404 }))
+
+  res.status(200).json({ 
+    message: "Done", 
+    blogs,
+    totalCount 
+  })
 }
 
 export const getAllBlogsEN = async (req, res, next) => {
+  const { page, size } = req.query
+  const { limit, skip } = pagination({ page, size })
 
-  const {page, size} = req.query
-  const {limit, skip} = pagination({page, size}) 
+  // Get total count of EN blogs
+  const totalCount = await Blog.countDocuments({ lang: "en" })
 
-  const blogs = await Blog.find({lang:"en"}).limit(limit).skip(skip);
-  
-  if (!blogs) return next(new Error("No Blogs Found", { cause: 404 }));
+  const blogs = await Blog.find({ lang: "en" }).limit(limit).skip(skip)
 
-  res.status(200).json({ message: `Done`, blogs });
+  if (!blogs) return next(new Error("No Blogs Found", { cause: 404 }))
+
+  res.status(200).json({ 
+    message: "Done", 
+    blogs,
+    totalCount 
+  })
 }
 
 
