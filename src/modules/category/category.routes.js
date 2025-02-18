@@ -31,4 +31,9 @@ router.get("/getLastThreeCategory",categoryCont.getLastThreeCategory)
 
 router.get("/getLastThreeCategoryForDashboard",categoryCont.getLastThreeCategoryForDashboard)
 
+
+router.get("/getAllCategoryARForDashboard",categoryCont.getAllCategoryARForDashboard)
+router.get("/getAllCategoryENForDashboard",categoryCont.getAllCategoryENForDashboard)
+
+
 export default router
