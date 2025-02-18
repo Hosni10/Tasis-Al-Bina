@@ -50,7 +50,9 @@ const userSchema = new Schema({
         default:'offline',
         enum:['offline','online'],
     },
-    
+    verificationCode: Number,
+    codeExpiresAt: Date,
+
     token:String,
     forgetCode:String,
 },{timestamps:true})

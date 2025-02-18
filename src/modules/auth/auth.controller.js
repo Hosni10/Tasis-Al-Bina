@@ -46,67 +46,74 @@ export const signUp = async(req,res,next) => {
 }  // ! for admin crate one account and will delete that api 
 
 
+// Use Redis or MongoDB to store verification codes instead of Map
+export const sendEmailBinCodeToAdd = async (req, res, next) => {
+  const { email } = req.body;
+  const verificationCode = crypto.randomInt(100000, 999999);
+  
+  // First check if email already exists
+  const existingUser = await userModel.findOne({ email });
+  if (existingUser) {
+      return next(new Error('Email already registered'));
+  }
 
+  // Store verification code in database
+  await tempVerificationModel.create({
+      email,
+      code: verificationCode,
+      expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes
+  });
 
+  await sendVerificationEmail(email, verificationCode);
+  res.status(200).json({ message: 'Verification code sent successfully' });
+};
 
 export const addUser = async (req, res, next) => {
-    try {
-      // console.log('Request body:', JSON.stringify(req.body, null, 2));
+  const {
+      firstName,
+      middleName,
+      lastName,
+      email,
+      password,
+      role,
+      phoneNumber,
+      verificationCode,
+  } = req.body;
 
-      // console.log(req.body);
-      
-      const {
-        firstName,
-        middleName,
-        lastName,
-        email,
-        password,
-        role,
-        phoneNumber,
-        verificationCode,  
-      } = req.body;
-  
-      const EmailExisted = await userModel.findOne({ email: email });
-      if (EmailExisted) return next(new Error('This email is already exist'));
-  
-   const storedCode = verificationCodesNew.get(email);
-  //  console.log(storedCode)
-   
-   if (!storedCode) {
-     console.error('No verification code found for email:', email);
-     return res.status(400).json({ error: 'No verification code found. Please request a new one.' });
-   }
- 
-   if (storedCode.code !== parseInt(verificationCode)) {
-     console.error('Verification code mismatch:', { stored: storedCode.code, provided: verificationCode });
-     return res.status(400).json({ error: 'Invalid or expired verification code' });
-   }
- 
-    if (storedCode.expiresAt < Date.now()) {
-     console.error('Verification code expired for email:', email);
-     return res.status(400).json({ error: 'Verification code expired' });
-   }
-       const user = new userModel({
-        firstName,
-        middleName,
-        lastName,
-        email,
-        password,
-        role,
-        phoneNumber,
-      });
-  
-      const saveUser = await user.save();
-      // console.log('User added successfully:', saveUser);
-      res.status(201).json({ message: 'User added successfully', saveUser });
-    } catch (error) {
-      console.error('Error adding user:', error);
-      res.status(500).json({ error: 'Failed to add user' });
-    }
+  // Get verification code from database
+  const storedVerification = await tempVerificationModel.findOne({ 
+      email,
+      code: verificationCode,
+      expiresAt: { $gt: Date.now() }
+  });
+
+  if (!storedVerification) {
+      return res.status(400).json({ error: 'Invalid or expired verification code' });
+  }
+
+  const user = await userModel.create({
+      firstName,
+      middleName,
+      lastName,
+      email,
+      password,
+      role,
+      phoneNumber,
+  });
+
+  // Clean up verification code
+  await tempVerificationModel.deleteOne({ email });
+
+  res.status(201).json({ message: 'User added successfully', user });
 };
+
+
+
+
 
 import pkg from 'bcrypt'
 import { decode } from "punycode";
+import { tempVerificationModel } from "../../../database/models/tempVerification.model.js";
 export const login = async(req,res,next) => {
     const {email,password} = req.body
 
@@ -146,33 +153,7 @@ export const login = async(req,res,next) => {
      res.status(200).json({message: 'Login Success', userUpdated})
 }
 
-const verificationCodesAdd = new Map(); // Key: email, Value: { code, expiresAt }
- export const sendEmailBinCode = async (req, res, next) => {
-    const { email } = req.body;
-    
-   const verificationCode = crypto.randomInt(100000, 999999);
 
-
-   const isEmailExsist = await userModel.findOne({email:email})
-
-   if(!isEmailExsist) return next(new Error('Eamil Not Found',{cause:404}))
-
-   verificationCodesAdd.set(email, {
-    code: verificationCode,
-    expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
-  });
-
-  console.log(verificationCodesAdd);
-
-
-   try {
-    await sendVerificationEmail(email, verificationCode);
-    res.status(200).json({ message: 'Verification code sent successfully' });
-  } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ error: 'Failed to send verification code' });
-  }
-};
 
  export const forgetPassword = async(req,res,next) => {
 
@@ -227,45 +208,6 @@ const verificationCodesAdd = new Map(); // Key: email, Value: { code, expiresAt 
     return res.status(200).json({message:"password changed",userupdete})
 }
 
-export const resetPassword = async(req,res,next) => {
-    const {verificationCode,newPassword,email} = req.body
-    // const decoded = verifyToken({token, signature: process.env.RESET_TOKEN}) // ! process.env.RESET_TOKEN
-
-    const user = await userModel.findOne({
-        email: email,
-        // fotgetCode:sentCode
- 
-    })
-
-    if(!user){
-        return res.status(400).json({message: "you are alreade reset it , try to login"})
-    }
-
-    const storedCode = verificationCodesAdd.get(email);
-    // console.log(storedCode)
-    
-    if (!storedCode) {
-      console.error('No verification code found for email:', email);
-      return res.status(400).json({ error: 'No verification code found. Please request a new one.' });
-    }
-  
-    if (storedCode.code !== parseInt(verificationCode)) {
-      console.error('Verification code mismatch:', { stored: storedCode.code, provided: verificationCode });
-      return res.status(400).json({ error: 'Invalid or expired verification code' });
-    }
-  
-     if (storedCode.expiresAt < Date.now()) {
-      console.error('Verification code expired for email:', email);
-      return res.status(400).json({ error: 'Verification code expired' });
-    }
-
-
-    user.password = newPassword,
-    user.forgetCode = null
-
-    const updatedUser = await user.save()
-    res.status(200).json({message: "Done",updatedUser})
-}
 
 
 
@@ -332,31 +274,7 @@ export const logout = async (req, res, next) => {
      res.status(201).json({message:`users Number : ${num}`,users})
 }
 
-    const verificationCodesNew = new Map(); // Key: email, Value: { code, expiresAt }
-    export const sendEmailBinCodeToAdd = async (req, res, next) => {
 
-
-       const { email } = req.body;
-       
-      const verificationCode = crypto.randomInt(100000, 999999);
-   
-   
-      verificationCodesNew.set(email, {
-       code: verificationCode,
-       expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
-     });
-   
-     console.log(verificationCodesNew);
-   
-   
-      try {
-       await sendVerificationEmail(email, verificationCode);
-       res.status(200).json({ message: 'Verification code sent successfully' });
-     } catch (error) {
-       console.error('Error sending email:', error);
-       res.status(500).json({ error: 'Failed to send verification code' });
-     }
-   };
 
    
 
@@ -405,6 +323,52 @@ export const logout = async (req, res, next) => {
       }
     };
    
+    // Option 1: Add the verification code to the user model temporarily
+export const sendEmailBinCode = async (req, res, next) => {
+  const { email } = req.body;
+  const verificationCode = crypto.randomInt(100000, 999999);
+  
+  const user = await userModel.findOne({email});
+  if(!user) return next(new Error('Email Not Found',{cause:404}));
+
+  // Store the code and expiry in the user document
+  user.verificationCode = verificationCode;
+  user.codeExpiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+  await user.save();
+
+  try {
+      await sendVerificationEmail(email, verificationCode);
+      res.status(200).json({ message: 'Verification code sent successfully' });
+  } catch (error) {
+      console.error('Error sending email:', error);
+      res.status(500).json({ error: 'Failed to send verification code' });
+  }
+};
+
+export const resetPassword = async(req,res,next) => {
+  const {verificationCode, newPassword, email} = req.body;
+  
+  const user = await userModel.findOne({email});
+  if(!user) {
+      return res.status(400).json({message: "User not found"});
+  }
+
+  if (!user.verificationCode || user.verificationCode !== parseInt(verificationCode)) {
+      return res.status(400).json({ error: 'Invalid verification code' });
+  }
+
+  if (user.codeExpiresAt < Date.now()) {
+      return res.status(400).json({ error: 'Verification code expired' });
+  }
+
+  user.password = newPassword;
+  user.verificationCode = null;
+  user.codeExpiresAt = null;
+
+  const updatedUser = await user.save();
+  res.status(200).json({message: "Password reset successfully", updatedUser});
+};
+
 
 export const updateUser = async(req,res,next) => {
       // console.log("ddd");
