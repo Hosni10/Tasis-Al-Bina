@@ -7,17 +7,17 @@ import nodemailer from 'nodemailer'
 //   attachments = [],
 // } = {}) {
 //   // configurations
-//   const transporter = nodemailer.createTransport({
-//     host: 'localhost', // stmp.gmail.com
-//     port: 587, // 587 , 465
-//     secure: false, // false , true
-//     service: 'gmail', // optional
-//     auth: {
-//       // credentials
-//       user: 'eslamhussin600@gmail.com',
-//       pass: 'rkew ivbu xytk cvng',
-//     },
-//   })
+  const transporter = nodemailer.createTransport({
+    host: 'localhost', // stmp.gmail.com
+    port: 587, // 587 , 465
+    secure: false, // false , true
+    service: 'gmail', // optional
+    auth: {
+      // credentials
+      user: 'eslamhussin600@gmail.com',
+      pass: 'rkew ivbu xytk cvng',
+    },
+  })
 
 //   const emailInfo = await transporter.sendMail({
 //     from: '"3amo samy 👻" <eslamhussin600@gmail.com>',

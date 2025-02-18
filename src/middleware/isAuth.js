@@ -5,7 +5,7 @@ export const isAuth = (roles) => {
     try {
       
 
-      console.log("Authorization Header:");
+      // console.log("Authorization Header:");
       
       const { authorization } = req.headers;
       if (!authorization) {
@@ -16,7 +16,7 @@ export const isAuth = (roles) => {
       
       const splitedToken = authorization.split(' ')[1];
 
-        console.log(splitedToken);
+        // console.log(splitedToken);
       
       try {
         // Verify token
@@ -27,7 +27,7 @@ export const isAuth = (roles) => {
         
 
         
-        console.log('Decoded Token Data:', decodedData);
+        // console.log('Decoded Token Data:', decodedData);
 
         // Find user
         const findUser = await userModel.findById(decodedData._id, 'email userName role');
@@ -35,10 +35,10 @@ export const isAuth = (roles) => {
           return res.status(401).json({ message: 'Invalid token' });
         }
 
-        console.log("findUser",findUser);
+        // console.log("findUser",findUser);
         
-        console.log("User Data:",findUser.role);
-        console.log("Roles Allowed:",roles);
+        // console.log("User Data:",findUser.role);
+        // console.log("Roles Allowed:",roles);
         
         // Check role
         // console.log('Roles Allowed:', roles);
