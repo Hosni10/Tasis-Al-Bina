@@ -2,6 +2,8 @@ import { categoryModel } from "../../../database/models/category.model.js"
 import { customAlphabet } from 'nanoid'
 import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js"
 import { pagination } from "../../utilities/pagination.js"
+import { interstedModel } from "../../../database/models/intersted.model.js"
+import { Unit } from "../../../database/models/unit.model.js"
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 export const createcategory = async (req, res, next) => {
@@ -160,14 +162,17 @@ export const updateCategory = async(req,res,next) => {
 export const deleteCategory= async (req, res, next) => {
   try {
 
-    
+      const categoryId = req.params.id
    
     const category = await categoryModel.findById(req.params.id);
     if (!category) {
       return next(new Error('category not found', { cause: 404 }));
     }
     
-    await destroyImage(category.Image.public_id);    
+    await interstedModel.deleteMany({categoryId})
+    await Unit.deleteMany({categoryId})
+    
+    await destroyImage(category.Image.public_id);   
     await categoryModel.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ message: 'category and image deleted successfully'});
