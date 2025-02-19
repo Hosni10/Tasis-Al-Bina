@@ -61,7 +61,7 @@ export const sendEmailBinCodeToAdd = async (req, res, next) => {
   await tempVerificationModel.create({
       email,
       code: verificationCode,
-      expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes
+      // expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes
   });
 
   await sendVerificationEmail(email, verificationCode);
@@ -84,8 +84,10 @@ export const addUser = async (req, res, next) => {
   const storedVerification = await tempVerificationModel.findOne({ 
       email,
       code: verificationCode,
-      expiresAt: { $gt: Date.now() }
+      // expiresAt: { $gt: Date.now() }
   });
+
+  
 
   if (!storedVerification) {
       return res.status(400).json({ error: 'Invalid or expired verification code' });

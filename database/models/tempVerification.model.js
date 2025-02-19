@@ -11,6 +11,6 @@ const tempVerificationSchema = new Schema({
     },
     codeExpiresAt: Date
 
-})
+},{timestamps:true})
 
 export const tempVerificationModel = model('tempVerification', tempVerificationSchema)
