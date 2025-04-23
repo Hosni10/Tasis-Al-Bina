@@ -27,10 +27,7 @@ export const createMessage = async(req,res,next) => {
 
 export const getAllMessages = async(req,res,next) => {
     try {
-    const {page, size} = req.query
-    const {limit, skip} = pagination({page, size}) 
-
-    const messages = await Message.find().limit(limit).skip(skip)
+    const messages = await Message.find()
 
     if(!messages) return next(new Error("No messages found",{cause:404}))
 

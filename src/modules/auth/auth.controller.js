@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { sendVerificationEmail} from "../../services/sendEmailService.js"
 import { nanoid } from "nanoid"
 import { emailTemplate } from "../../utilities/emailTemplate.js";
+import pkg from 'bcrypt'
 
 import jwt from "jsonwebtoken";
 
@@ -24,6 +25,8 @@ export const signUp = async(req,res,next) => {
         return next(new Error('Email Is Already Exsist', { cause: 400 }))
     }
 
+    const hashedPassword = pkg.hashSync(password, +process.env.SALT_ROUNDS)
+
     const token = generateToken({
         payload:{
             email,
@@ -37,7 +40,7 @@ export const signUp = async(req,res,next) => {
         middleName,
         lastName,
         email,
-        password,
+        password:hashedPassword,
         phoneNumber,
         role
     })
@@ -113,7 +116,6 @@ export const addUser = async (req, res, next) => {
 
 
 
-import pkg from 'bcrypt'
 import { decode } from "punycode";
 import { tempVerificationModel } from "../../../database/models/tempVerification.model.js";
 export const login = async(req,res,next) => {
