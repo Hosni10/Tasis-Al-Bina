@@ -1,5 +1,4 @@
 import { Schema,model } from "mongoose"
-import pkg from 'bcrypt'
 import { systemRoles } from "../../src/utilities/systemRole.js"
 
 const userSchema = new Schema({
@@ -57,9 +56,6 @@ const userSchema = new Schema({
     forgetCode:String,
 },{timestamps:true})
 
-    userSchema.pre('save',function(){
-        this.password = pkg.hashSync(this.password, +process.env.SALT_ROUNDS)
-    })
 
 export const userModel = model('User', userSchema)
 
