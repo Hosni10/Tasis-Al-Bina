@@ -11,10 +11,10 @@ const unitSchema = mongoose.Schema({
         default: "شقة",
         enum: [
             "فيلا", "شقة", "دوبلكس", "مكتب", "محل تجاري", "مستودع",
-            "استوديو", "شاليه", "مستودع", "مكتب","Villa", "Apartment",
-            "Duplex", "Office", "Retail Shop", "Warehouse",
-            "Studio", "Chalet"
-        ]
+            "استوديو", "شاليه", "دور ارضي", "دور علوي", "تاون هاوس", "بنتهاوس",
+            "Villa", "Apartment", "Duplex", "Office", "Retail Shop", "Warehouse",
+            "Studio", "Chalet", "Ground Floor", "Upper Floor", "Townhouse", "Penthouse"
+          ]
     },
     categoryId:{
         type: Schema.Types.ObjectId,
