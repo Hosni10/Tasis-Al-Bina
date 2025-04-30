@@ -90,6 +90,7 @@ export const addUser = async (req, res, next) => {
       // expiresAt: { $gt: Date.now() }
   });
 
+  const hashedPassword = pkg.hashSync(password, +process.env.SALT_ROUNDS)
   
 
   if (!storedVerification) {
@@ -101,7 +102,7 @@ export const addUser = async (req, res, next) => {
       middleName,
       lastName,
       email,
-      password,
+      password: hashedPassword,
       role,
       phoneNumber,
   });
@@ -116,7 +117,6 @@ export const addUser = async (req, res, next) => {
 
 
 
-import { decode } from "punycode";
 import { tempVerificationModel } from "../../../database/models/tempVerification.model.js";
 export const login = async(req,res,next) => {
     const {email,password} = req.body
