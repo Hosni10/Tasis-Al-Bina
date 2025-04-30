@@ -472,11 +472,13 @@ export const updateUser = async(req,res,next) => {
           // console.log(id);
           
       try {
-         const {firstName,
+         const {
+          firstName,
           middleName,
           lastName,
           phoneNumber,
-          role
+          role,
+          email
           } = req.body
 
           
@@ -492,6 +494,7 @@ export const updateUser = async(req,res,next) => {
         if(lastName) user.lastName = lastName
         if(phoneNumber) user.phoneNumber = phoneNumber
         if(role) user.role = role
+        if(email) user.email = email
       
         await user.save()
         res.status(200).json({message : "user updated successfully",user})
