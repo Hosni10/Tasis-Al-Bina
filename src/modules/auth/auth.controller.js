@@ -32,7 +32,7 @@ export const signUp = async(req,res,next) => {
             email,
         },
         signature: process.env.CONFIRMATION_EMAIL_TOKEN, 
-        expiresIn: '1h',
+        expiresIn: '1w',
      })
      
     const user = new userModel({
@@ -82,7 +82,8 @@ export const addUser = async (req, res, next) => {
       phoneNumber,
       verificationCode,
   } = req.body;
-
+  console.log(verificationCode);
+  
   // Get verification code from database
   const storedVerification = await tempVerificationModel.findOne({ 
       email,
@@ -140,7 +141,7 @@ export const login = async(req,res,next) => {
             role: userExsist.role
         },
         signature: process.env.SIGN_IN_TOKEN_SECRET,  
-        // expiresIn: '1h',
+        // expiresIn: '1w',
      })
      
 
@@ -188,7 +189,7 @@ export const login = async(req,res,next) => {
             sendCode:hashcode,
         },
         signature: process.env.RESET_TOKEN, // ! process.env.RESET_TOKEN
-        expiresIn: '1h',
+        expiresIn: '1w',
     })
     const resetPasswordLink = `http://localhost:3000/auth/reset/${token}`
     const isEmailSent = sendEmailService({
