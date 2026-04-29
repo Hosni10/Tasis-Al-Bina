@@ -43,13 +43,13 @@ export const sendEmail = async (to, subject, text) => {
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: "eslamhussin600@gmail.com",
-                pass: "rkew ivbu xytk cvng",
+                user: "tasissbinaa@gmail.com",
+                pass: "xozj dyfw abyt wsyw",
             },
         });
 
         const mailOptions = {
-            from: "eslamhussin600@gmail.com",
+            from: "tasissbinaa@gmail.com",
             to,
             subject,
             text,
@@ -75,8 +75,8 @@ export const sendVerificationEmail = async (toEmail, verificationCode) => {
     port: process.env.SMTP_PORT,
     secure: false, // Use TLS
     auth: {
-      user:"yussef.ali.it@gmail.com",
-      pass:"sxuo ejwl xeha fpvj"
+      user:"tasissbinaa@gmail.com",
+      pass:"xozj dyfw abyt wsyw"
     },
   });
 
