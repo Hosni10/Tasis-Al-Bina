@@ -15,7 +15,7 @@ router.get('/users',AuthCon.getAllUser)
    
     
 
-   router.post("/sendEmail",AuthCon.sendEmailBinCode)
+   router.post("/sendEmail",AuthCon.sendEmailBinCodeToAdd)
    router.post("/add",isAuth(addUsersEndpoints.ADD_USER),AuthCon.addUser)  
 
    router.get('/users',AuthCon.getAllUser) 

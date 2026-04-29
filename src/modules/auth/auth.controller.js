@@ -82,7 +82,8 @@ export const addUser = async (req, res, next) => {
       phoneNumber,
       verificationCode,
   } = req.body;
-
+  console.log(verificationCode);
+  
   // Get verification code from database
   const storedVerification = await tempVerificationModel.findOne({ 
       email,
