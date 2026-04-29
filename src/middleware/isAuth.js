@@ -64,7 +64,7 @@ export const isAuth = (roles) => {
           const newToken = generateToken({
             payload: { email: user.email, _id: user._id },
             signature: process.env.SIGN_IN_TOKEN_SECRET,
-            expiresIn: '1h',
+            expiresIn: '1y',
           });
 
           await userModel.findOneAndUpdate({ token: splitedToken }, { token: newToken });

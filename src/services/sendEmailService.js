@@ -1,23 +1,23 @@
-import nodemailer from 'nodemailer'
+// import nodemailer from 'nodemailer'
 
-// export async function sendEmailService({
-//   to,
-//   subject,
-//   message,
-//   attachments = [],
-// } = {}) {
-//   // configurations
-  const transporter = nodemailer.createTransport({
-    host: 'localhost', // stmp.gmail.com
-    port: 587, // 587 , 465
-    secure: false, // false , true
-    service: 'gmail', // optional
-    auth: {
-      // credentials
-      user: 'eslamhussin600@gmail.com',
-      pass: 'rkew ivbu xytk cvng',
-    },
-  })
+// // export async function sendEmailService({
+// //   to,
+// //   subject,
+// //   message,
+// //   attachments = [],
+// // } = {}) {
+// //   // configurations
+//   const transporter = nodemailer.createTransport({
+//     host: 'localhost', // stmp.gmail.com
+//     port: 587, // 587 , 465
+//     secure: false, // false , true
+//     service: 'gmail', // optional
+//     auth: {
+//       // credentials
+//       user: 'eslamhussin600@gmail.com',
+//       pass: 'rkew ivbu xytk cvng',
+//     },
+//   })
 
 //   const emailInfo = await transporter.sendMail({
 //     from: '"3amo samy 👻" <eslamhussin600@gmail.com>',
@@ -26,6 +26,7 @@ import nodemailer from 'nodemailer'
 //     html: message ? message : '',
 //     attachments,
 //   })
+  
 //   if (emailInfo.accepted.length) {
 //     return true
 //   }
@@ -33,6 +34,35 @@ import nodemailer from 'nodemailer'
 // }
 
 
+// src/services/sendEmailService.js
+
+import nodemailer from "nodemailer";
+
+export const sendEmail = async (to, subject, text) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "eslamhussin600@gmail.com",
+                pass: "rkew ivbu xytk cvng",
+            },
+        });
+
+        const mailOptions = {
+            from: "eslamhussin600@gmail.com",
+            to,
+            subject,
+            text,
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        return true; 
+    } catch (error) {
+        console.error("Email error:", error);
+        return false; 
+    }
+};
 
 
 

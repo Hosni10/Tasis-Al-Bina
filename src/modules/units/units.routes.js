@@ -20,7 +20,7 @@ unitRouter.delete('/deleteunit/:id'/*,isAuth(addUnitEndpoints.ADD_UNIT)*/,delete
 // get all unit with the full category data
 unitRouter.get('/getUnitWithCategory',getUnitWithCategory)
 
-
+// https://tasis-al-bina.onrender.com/unit/getunit/681a1d5acf6d5d8c5da3c764
 // get all unit By category id
 
 unitRouter.get('/getAllUnitByCategoryId/:id',getAllUnitByCategoryId)
